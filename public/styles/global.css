@@ -1,0 +1,64 @@
+@media (prefers-color-scheme: dark) {
+	:root {
+		--bg-color: #1F1F21;
+		--fg-color: #CECFD2;
+
+		--link-color: #669DF1;
+	}
+
+	.icon {
+		filter: invert(89%) sepia(5%) saturate(104%) hue-rotate(187deg) brightness(96%) contrast(86%);
+	}
+
+	.icon-btn:hover .icon {
+		filter: invert(48%) sepia(53%) saturate(534%) hue-rotate(179deg) brightness(112%) contrast(89%);
+	}
+}
+
+@media (prefers-color-scheme: light) {
+	:root {
+		--bg-color: #F8F8F8;
+		--fg-color: #292A2E;
+
+		--link-color: #357DE8;
+	}
+
+	.icon {
+		filter: invert(12%) sepia(6%) saturate(889%) hue-rotate(191deg) brightness(96%) contrast(87%);
+	}
+
+	.icon-btn:hover .icon {
+		filter: invert(41%) sepia(96%) saturate(2578%) hue-rotate(202deg) brightness(97%) contrast(87%);
+	}
+}
+
+html {
+	background-color: var(--bg-color);
+	color: var(--fg-color);
+}
+
+body {
+	margin: 0;
+}
+
+main {
+	margin: auto;
+	width: fit-content;
+}
+
+.icon {
+	height: 2rem;
+}
+
+.icon-btn {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+
+	color: var(--fg-color);
+	text-decoration: none;
+}
+
+.icon-btn:hover {
+	color: var(--link-color);
+}

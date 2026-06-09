@@ -1,0 +1,18 @@
+header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1rem 2rem;
+}
+
+header .home-btn {
+	color: inherit;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+@media (max-width: 1024px) {
+	header {
+		padding: 0.5rem 1rem;
+	}
+}
