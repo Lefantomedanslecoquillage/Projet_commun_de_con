@@ -25,7 +25,6 @@ serial.port = config.get("serial", "port")
 while not serial.is_open:
 	serial.open()
 
-
 # connect to remote database
 host = config.get("database", "host")
 port = config.getint("database", "port")
@@ -52,7 +51,7 @@ while True:
 
 	cursor.execute("INSERT INTO CO2 (timestamp, value) VALUES (NOW(), %s)", (co2,))
 	cursor.execute("INSERT INTO VOC (timestamp, value) VALUES (NOW(), %s)", (voc,))
-	# add commit when the code is confirmed to be working
+	connection.commit()
 	print(f"Valeur de CO2 : {co2}, le {time.strftime('%Y-%m-%d %H:%M:%S')}")
 	print(f"Valeur de VOC : {voc}, le {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
 

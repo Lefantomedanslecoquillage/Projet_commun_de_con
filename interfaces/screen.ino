@@ -8,10 +8,10 @@
 
 #include "ISEP_Font.h"
 
-// L afficheur est connecte au port I2C-2
+// L'afficheur est connecté au port I2C2
 #define I2C_NUM 2
 
-// L'adresse semble etre 0x3C sur 7 bits, soit 0x78 sur 8 bits 
+// L'adresse est 0x78 sur 8 bits
 #define AFIOLED_ADDR 0x78
 
 extern const char Isep_Font[];
@@ -191,23 +191,23 @@ void AOLED_InitScreen(void) {
 #define MCS_ERROR	0x02
 
 static void TIVA_I2C2_SendData(char slaveAdr, short nbdata, char* pBuff) {
-	unsigned int value, cmde, PortI2c;	short nerr, nbtst;
+	unsigned int value, cmde;
+	short nerr, nbtst;
 
-	PortI2c = I2C2_BASE;
 	nerr = -2;
 	if (nbdata < 0 || nbdata > 127)
 		return;
-	HWREG(PortI2c + I2Cx_MSA) = slaveAdr & 0x00FE;
+	HWREG(I2C2_BASE + I2Cx_MSA) = slaveAdr & 0x00FE;
 	nerr = -3;
 	value = *pBuff++;   nbdata--;
-	HWREG(PortI2c + I2Cx_MDR) = value;
+	HWREG(I2C2_BASE + I2Cx_MDR) = value;
 	cmde = MCS_RUN | MCS_START;
 	while (1) {
 		if (nbdata == 0)
 			cmde |= MCS_STOP;
-		HWREG(PortI2c + I2Cx_MCS) = cmde;   nbtst = 10;
+		HWREG(I2C2_BASE + I2Cx_MCS) = cmde;   nbtst = 10;
 		while (nbtst > 0) {
-			value = HWREG(PortI2c + I2Cx_MCS);
+			value = HWREG(I2C2_BASE + I2Cx_MCS);
 			if ((value & MCS_BUSY) == 0)
 				break;
 			delayMicroseconds(20);
@@ -217,7 +217,7 @@ static void TIVA_I2C2_SendData(char slaveAdr, short nbdata, char* pBuff) {
 		if (nbdata == 0)
 			break;
 		value = *pBuff++;   nbdata--;
-		HWREG(PortI2c + I2Cx_MDR) = value;
+		HWREG(I2C2_BASE + I2Cx_MDR) = value;
 		cmde = MCS_RUN;
 	}
 	nerr = 0;
