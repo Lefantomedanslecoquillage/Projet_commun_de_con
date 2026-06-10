@@ -13,17 +13,13 @@ header .home-btn {
 
 #loginModal {
 	display: none;
-	position: absolute;
-	right: 8px;
-}
-
-#loginModal form {
-	display: flex;
 	flex-direction: column;
 	gap: 1rem;
+	position: absolute;
+	right: 1rem;
 }
 
-#loginModal form label {
+#loginModal label {
 	display: flex;
 	flex-direction: column;
 	gap: 0.5rem;

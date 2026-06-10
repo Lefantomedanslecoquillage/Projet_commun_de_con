@@ -2,6 +2,10 @@
 
 Un fichier `/app/models/config.ini` doit se trouver à la racine de ce répertoire et il ressemble à ceci :
 ```ini
+[serial]
+baudrate = 9600
+port = COM?
+
 [database]
 host = ?
 port = 3306

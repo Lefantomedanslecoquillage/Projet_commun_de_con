@@ -45,15 +45,16 @@ connection = pymysql.connect(**connection_params)
 cursor = connection.cursor()
 
 while True:
-	line = serial.readline().decode("utf-8", errors="ignore").strip()
-	if not line:
+	co2 = int(serial.readline().decode("utf-8", errors="ignore").strip())
+	voc = int(serial.readline().decode("utf-8", errors="ignore").strip())
+	if not co2:
 		continue
 
-	sql = "INSERT INTO CO2 (timestamp, value) VALUES (NOW(), %s)"
-	# not inserted yet
-	co2_value = int(line)
-	cursor.execute(sql, (co2_value,))
-	print(f"Valeur de CO2 insérer : {co2_value}, le {time.strftime('%Y-%m-%d %H:%M:%S')}")
+	cursor.execute("INSERT INTO CO2 (timestamp, value) VALUES (NOW(), %s)", (co2,))
+	cursor.execute("INSERT INTO VOC (timestamp, value) VALUES (NOW(), %s)", (voc,))
+	# add commit when the code is confirmed to be working
+	print(f"Valeur de CO2 : {co2}, le {time.strftime('%Y-%m-%d %H:%M:%S')}")
+	print(f"Valeur de VOC : {voc}, le {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
 
 serial.close()
 

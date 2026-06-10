@@ -16,19 +16,16 @@
 	<?php endif; ?>
 </header>
 
-<div id="loginModal" class="hide">
+<form id="loginModal" method="post" action="index.php?action=login">
 	<?php if (!empty($error)): ?>
 		<p class="error"><?php echo htmlspecialchars($error); ?></p>
 	<?php endif; ?>
-
-	<form method="post" action="index.php?action=login">
-		<label>Nom d'utilisateur :
-			<input type="text" name="username" required>
-		</label>
-		<label>Mot de passe :
-			<input type="password" name="password" required>
-		</label>
-		<button type="submit">Se connecter</button>
-		<button type="button" id="loginCancelButton" class="danger">Annuler</button>
-	</form>
-</div>
+	<label>Nom d'utilisateur :
+		<input type="text" name="username" required>
+	</label>
+	<label>Mot de passe :
+		<input type="password" name="password" required>
+	</label>
+	<button type="submit">Se connecter</button>
+	<button type="button" id="loginCancelButton" class="danger">Annuler</button>
+</form>

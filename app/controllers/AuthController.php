@@ -5,7 +5,7 @@ require_once __DIR__ . "/../models/User.php";
 class AuthController {
 	public function dashboard() {
 		if (!isset($_SESSION["user"])) {
-			header("Location: index.php?action=login");
+			header("Location: index.php");
 			exit;
 		}
 		require __DIR__ . "/../views/dashboard.php";
@@ -42,12 +42,12 @@ class AuthController {
 			}
 		}
 
-		require __DIR__ . "/../views/dashboard.php";
+		require __DIR__ . "/../views/homepage.php";
 	}
 
 	public function logout() {
 		session_destroy();
-		header("Location: index.php?action=login");
+		header("Location: index.php");
 		exit;
 	}
 }

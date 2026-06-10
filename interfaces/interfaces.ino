@@ -25,7 +25,7 @@ void setup() {
 	while (sgp_probe() != STATUS_OK) {
 		delay(1000);
 	}
-	SGP30_Init();
+	sgp_iaq_init();
 
 	u16 scaled_ethanol_signal, scaled_h2_signal;
 	sgp_measure_signals_blocking_read(&scaled_ethanol_signal, &scaled_h2_signal);
@@ -68,7 +68,7 @@ void loop() {
 		sprintf(co2_output, "CO2: %d ppm", co2);
 		sprintf(voc_output, "VOC: %d ppb", voc);
 
-		Serial.print(co2);
+		Serial.println(co2);
 		Serial.println(voc);
 
 		if (isAwake) {
