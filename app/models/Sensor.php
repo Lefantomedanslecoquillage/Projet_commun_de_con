@@ -1,7 +1,8 @@
 <?php
-require_once __DIR__ . '/Database.php';
+require_once __DIR__ . "/Database.php";
 
-class Sensor {
+class Sensor
+{
 	public static function getLast60MinutesData(): array
 	{
 		$pdo = Database::getConnection();
@@ -20,27 +21,13 @@ class Sensor {
 		$stmtVOC->execute();
 		$vocData = $stmtVOC->fetchAll();
 
-		// Formatage {x, y}
-		$co2Points = array_map(fn($r) => ['x' => $r['timestamp'], 'y' => (int)$r['value']], $co2Data);
-		$vocPoints = array_map(fn($r) => ['x' => $r['timestamp'], 'y' => (int)$r['value']], $vocData);
+		// Transformation en {x, y}
+		$co2Points = array_map(fn($r) => ["x" => $r["timestamp"], "y" => (int)$r["value"]], $co2Data);
+		$vocPoints = array_map(fn($r) => ["x" => $r["timestamp"], "y" => (int)$r["value"]], $vocData);
 
 		return [
-			'datasets' => [
-				[
-					'label'           => 'CO2',
-					'data'            => $co2Points,
-					'borderColor'     => 'rgb(75, 192, 192)',
-					'backgroundColor' => 'rgba(75, 192, 192, 0.1)',
-					'tension'         => 0.3
-				],
-				[
-					'label'           => 'VOC',
-					'data'            => $vocPoints,
-					'borderColor'     => 'rgb(255, 99, 132)',
-					'backgroundColor' => 'rgba(255, 99, 132, 0.1)',
-					'tension'         => 0.3
-				]
-			]
+			"co2" => $co2Points,
+			"voc" => $vocPoints
 		];
 	}
 }

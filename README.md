@@ -18,7 +18,7 @@ Les valeurs sont disponibles ici :
 
 ## Librairies Arduino
 
-Installez les librairies 
+Installez les librairies Seeed Arduino SGP30.
 
 ## Librairies Python
 
@@ -30,3 +30,9 @@ Installez les libraries requises (pymysql et pyserial) avec `pip install -r inte
 pour lire et envoyer des données vers la base de donnée externe.
 2. Allez sur le site [SmartWake](https://hangar.garageisep.com/projects/51)
 et connectez-vous pour voir les valeurs.
+
+Une LED rouge statique indique que les capteurs ne sont pas encore prêts.<br>
+Une LED bleue clignotante indique des données sont envoyés sur le port Serial.
+
+L'écran se mettra en veille après 30 secondes, vous pouvez le réveiller en appuyant sur le bouton SW1.
+Cette opération sera confirmée par le clignotement de la LED verte.

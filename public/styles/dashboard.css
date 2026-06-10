@@ -1,0 +1,11 @@
+.charts-container {
+	display: flex;
+	flex-direction: column;
+	gap: 4rem;
+
+	width: 80vw;
+}
+
+.chart-wrapper {
+	min-height: 20vh;
+}

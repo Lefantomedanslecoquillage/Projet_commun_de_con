@@ -43,6 +43,21 @@ connection_params = {
 connection = pymysql.connect(**connection_params)
 cursor = connection.cursor()
 
+print(r"""
+     .==-_-,
+    /',o :"       En attente des valeurs...
+    |;:""(
+   /: ,.:\        Si les valeurs ne viennent toujours pas,
+  /: :;  ';       vérifiez que la LED bleue de la carte clignote.
+  : ::\   (
+ /::\::|  ,`.     Si la LED ne clignote pas,
+/::; \;'  |\)     vérifiez que tous les câbles sont branchés.
+\::   )  ,'
+/:: ,~  /         Si ça ne fonctionne toujours pas, appelez le pingouin.
+`' )<  )<
+
+""")
+
 while True:
 	co2 = int(serial.readline().decode("utf-8", errors="ignore").strip())
 	voc = int(serial.readline().decode("utf-8", errors="ignore").strip())
@@ -52,8 +67,8 @@ while True:
 	cursor.execute("INSERT INTO CO2 (timestamp, value) VALUES (NOW(), %s)", (co2,))
 	cursor.execute("INSERT INTO VOC (timestamp, value) VALUES (NOW(), %s)", (voc,))
 	connection.commit()
-	print(f"Valeur de CO2 : {co2}, le {time.strftime('%Y-%m-%d %H:%M:%S')}")
-	print(f"Valeur de VOC : {voc}, le {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
+	print(f"Valeur de CO2 : {co2:>5}, le {time.strftime('%Y-%m-%d %H:%M:%S')}")
+	print(f"Valeur de VOC : {voc:>5}, le {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
 
 serial.close()
 

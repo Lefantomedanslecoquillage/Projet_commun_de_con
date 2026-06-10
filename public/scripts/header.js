@@ -1,7 +1,11 @@
-document.getElementById('loginButton').addEventListener("click", function() {
-	document.getElementById("loginModal").style.display = "flex"
-})
+const loginButton = document.getElementById("loginButton");
 
-document.getElementById('loginCancelButton').addEventListener("click", function() {
-	document.getElementById("loginModal").style.display = "none"
-})
+if (loginButton) {
+	document.getElementById("loginButton").addEventListener("click", function () {
+		document.getElementById("loginModal").style.display = "flex"
+	})
+
+	document.getElementById("loginCancelButton").addEventListener("click", function () {
+		document.getElementById("loginModal").style.display = "none"
+	})
+}
