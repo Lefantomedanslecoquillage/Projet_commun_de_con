@@ -42,7 +42,7 @@ class AuthController {
 			}
 		}
 
-		require __DIR__ . "/../views/login.php";
+		require __DIR__ . "/../views/dashboard.php";
 	}
 
 	public function logout() {

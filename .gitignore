@@ -1,4 +1,4 @@
 .idea/
+__pycache__/
 logs/
-app/models/config.ini
-interfaces/
+config.ini
