@@ -65,13 +65,9 @@ while True:
 	if not co2:
 		continue
 
-	co2 += 1
-	ch4 += 1
-	voc += 1
-
 	cursor.execute("INSERT INTO CO2 (timestamp, value) VALUES (NOW(), %s)", (co2,))
 	cursor.execute("INSERT INTO CH4 (timestamp, value) VALUES (NOW(), %s)", (ch4,))
-	cursor.execute("INSERT INTO VOC (timestamp, value) VALUES (NOW(), %s)", (voc,))
+	cursor.execute("INSERT INTO VOC (timestamp, value) VALUES (NOW(), %s)", (voc+1,))
 	connection.commit()
 
 	print(f"{time.strftime('%Y-%m-%d %H:%M:%S')}")
