@@ -1,4 +1,4 @@
-new Chart(document.getElementById("co2Chart"), {
+const co2Chart = new Chart(document.getElementById("co2Chart"), {
 	type: "line",
 	data: {
 		datasets: [{
@@ -23,7 +23,7 @@ new Chart(document.getElementById("co2Chart"), {
 				title: { display: true, text: "Heure" }
 			},
 			y: {
-				beginAtZero: true,
+				type: "logarithmic",
 				title: { display: true, text: "ppm" }
 			}
 		},
@@ -34,7 +34,43 @@ new Chart(document.getElementById("co2Chart"), {
 	}
 });
 
-new Chart(document.getElementById("vocChart"), {
+const ch4Chart = new Chart(document.getElementById("ch4Chart"), {
+	type: "line",
+	data: {
+		datasets: [{
+			label: "CH4",
+			data: ch4Data,
+			borderColor: "rgb(46, 204, 113)",
+			backgroundColor: "rgba(46, 204, 113, 0.1)",
+			tension: 0.3
+		}]
+	},
+	options: {
+		responsive: true,
+		maintainAspectRatio: false,
+		scales: {
+			x: {
+				type: "time",
+				time: {
+					unit: "minute",
+					displayFormats: { minute: "HH:mm" },
+					tooltipFormat: "dd/MM/yyyy HH:mm"
+				},
+				title: { display: true, text: "Heure" }
+			},
+			y: {
+				type: "logarithmic",
+				title: { display: true, text: "ppb" }
+			}
+		},
+		plugins: {
+			tooltip: { mode: "index", intersect: false },
+			legend: { position: "top" }
+		}
+	}
+});
+
+const vocChart = new Chart(document.getElementById("vocChart"), {
 	type: "line",
 	data: {
 		datasets: [{
@@ -59,7 +95,7 @@ new Chart(document.getElementById("vocChart"), {
 				title: { display: true, text: "Heure" }
 			},
 			y: {
-				beginAtZero: true,
+				type: "logarithmic",
 				title: { display: true, text: "ppb" }
 			}
 		},
@@ -69,3 +105,22 @@ new Chart(document.getElementById("vocChart"), {
 		}
 	}
 });
+
+let refreshInterval = setInterval(() => {
+	fetch(`index.php?action=dashboard&range=${range}&format=json`)
+		.then(response => {
+			if (!response.ok) throw new Error("Erreur réseau");
+			return response.json();
+		})
+		.then(newData => {
+			co2Chart.data.datasets[0].data = newData.co2;
+			co2Chart.update();
+
+			ch4Chart.data.datasets[0].data = newData.ch4;
+			ch4Chart.update();
+
+			vocChart.data.datasets[0].data = newData.voc;
+			vocChart.update();
+		})
+		.catch(error => console.error("Échec du rafraîchissement :", error));
+}, 5000);

@@ -34,5 +34,5 @@ et connectez-vous pour voir les valeurs.
 Une LED rouge statique indique que les capteurs ne sont pas encore prêts.<br>
 Une LED bleue clignotante indique des données sont envoyés sur le port Serial.
 
-L'écran se mettra en veille après 30 secondes, vous pouvez le réveiller en appuyant sur le bouton SW1.
+L'écran se mettra en veille après une minute, vous pouvez le réveiller en appuyant sur le bouton SW1.
 Cette opération sera confirmée par le clignotement de la LED verte.

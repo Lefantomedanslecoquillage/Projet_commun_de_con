@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once __DIR__ . "/../app/controllers/AuthController.php";
 
 $action = $_GET["action"] ?? "";
@@ -8,12 +9,13 @@ switch ($action) {
 	case "login":
 		$controller->login();
 		break;
-	case "dashboard":
-		$controller->dashboard();
-		break;
 	case "logout":
 		$controller->logout();
 		break;
 	default:
-		$controller->homepage();
+		if (!isset($_SESSION["user"])) {
+			$controller->homepage();
+		} else {
+			$controller->dashboard();
+		}
 }

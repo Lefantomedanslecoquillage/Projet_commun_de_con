@@ -6,10 +6,13 @@
 #define LED_G_PIN PF_3
 #define LED_B_PIN PF_2
 
+#define MQ2_PIN A3
+
 static unsigned long lastWake = 0;
 static unsigned long lastFetch = 0;
-static unsigned short co2, voc;
+static unsigned short co2, ch4, voc;
 static char co2_output[128];
+static char ch4_output[128];
 static char voc_output[128];
 static bool isWarming = true;
 static bool isAwake = true;
@@ -59,23 +62,27 @@ void loop() {
 		isScreenCleared = false;
 	}
 
-	isAwake = millis() - lastWake > 30000 ? false : true;
+	isAwake = millis() - lastWake > 60000 ? false : true;
 
-	if (millis() - lastFetch > 1000) {
+	if (millis() - lastFetch > 5000) {
 		lastFetch = millis();
 
 		sgp_measure_iaq_blocking_read(&voc, &co2);
+		ch4 = analogRead(MQ2_PIN);
+
 		sprintf(co2_output, "CO2: %d ppm", co2);
+		sprintf(ch4_output, "CH4: %d ppm", ch4);
 		sprintf(voc_output, "VOC: %d ppb", voc);
 
 		Serial.println(co2);
+		Serial.println(ch4);
 		Serial.println(voc);
 
 		if (isAwake) {
-			AOLED_FillLine(3, 0x0);
+			for (int line = 3; line <=5; ++line) { AOLED_FillLine(line, 0x0); }
 			AOLED_DisplayTexte(8, 3, co2_output);
-			AOLED_FillLine(4, 0x0);
-			AOLED_DisplayTexte(8, 4, voc_output);
+			AOLED_DisplayTexte(8, 4, ch4_output);
+			AOLED_DisplayTexte(8, 5, voc_output);
 		} else if (!isScreenCleared) {
 			AOLED_FillScreen(0x0);
 			isScreenCleared = true;

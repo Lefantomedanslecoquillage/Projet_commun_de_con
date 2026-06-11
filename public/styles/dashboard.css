@@ -3,9 +3,46 @@
 	flex-direction: column;
 	gap: 4rem;
 
-	width: 80vw;
+	width: 90vw;
 }
 
 .chart-wrapper {
 	min-height: 20vh;
+}
+
+.range-buttons {
+	display: flex;
+	justify-content: center;
+	gap: 2rem;
+
+	witdh: 90vw;
+}
+
+.range-buttons a {
+	border: 1px solid var(--fg-color);
+	border-radius: 0.5rem;
+	padding: 1rem;
+
+	color: var(--fg-color);
+	text-decoration: none;
+}
+
+.range-buttons a.active {
+	border-color: var(--active-color);
+	color: var(--active-color);
+}
+
+.range-buttons a:hover {
+	border-color: var(--link-color);
+	color: var(--link-color);
+}
+
+@media (max-width: 768px) {
+	.charts-container {
+		gap: 2rem;
+	}
+
+	.range-buttons a {
+		padding: 0.5rem;
+	}
 }

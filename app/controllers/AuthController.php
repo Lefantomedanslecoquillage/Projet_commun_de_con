@@ -1,32 +1,23 @@
 <?php
-session_start();
 require_once __DIR__ . "/../models/User.php";
-require_once __DIR__ . "/../models/Sensor.php";   // Modèle au lieu d'un contrôleur
+require_once __DIR__ . "/../models/Sensor.php";
 
-class AuthController
-{
-	public function dashboard()
-	{
-		if (!isset($_SESSION["user"])) {
-			header("Location: index.php");
+class AuthController {
+	public function dashboard() {
+		$range = isset($_GET["range"]) ? (int)$_GET["range"] : 15;
+		$chartData = Sensor::getDataByRange($range);
+
+		if (isset($_GET['format']) && $_GET['format'] === 'json') {
+			header('Content-Type: application/json');
+			echo json_encode($chartData);
 			exit;
 		}
-
-		// Le modèle fournit les données
-		$chartData = Sensor::getLast60MinutesData();
 
 		require __DIR__ . "/../views/dashboard.php";
 	}
 
-	public function homepage()
-	{
-		if (isset($_SESSION["user"])) {
-			$chartData = Sensor::getLast60MinutesData();
-			$file = __DIR__ . "/../views/dashboard.php";
-		} else {
-			$file = __DIR__ . '/../views/homepage.php';
-		}
-		require $file;
+	public function homepage() {
+		require __DIR__ . "/../views/homepage.php";
 	}
 
 	public function login() {
