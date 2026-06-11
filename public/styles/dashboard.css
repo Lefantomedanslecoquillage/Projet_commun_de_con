@@ -39,7 +39,7 @@
 
 @media (max-width: 768px) {
 	.charts-container {
-		gap: 2rem;
+		gap: 1.5rem;
 	}
 
 	.range-buttons a {

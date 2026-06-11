@@ -46,7 +46,6 @@ static void AOLED_SetAdrsCol(char addrs) {
 	AOLED_WriteCmde(lsb);
 }
 
-
 void AOLED_InvertDisplay(short invert) {
 	char cmd = invert ? 0xA7 : 0xA6;
 	AOLED_WriteCmde(cmd);
@@ -84,21 +83,7 @@ void AOLED_WriteColonne(char value, short nbcol) {
 	}
 }
 
-void AOLED_DisplayImage(const char *pBuff) {
-	short numcol, numlin, deblin;
-
-	deblin = 0;
-	for (numlin = 0; numlin < 8; numlin++) {
-		AOLED_SetAdrsLin(numlin);
-		AOLED_SetAdrsCol(0);
-		for (numcol = 127; numcol >= 0; numcol--) {
-			AOLED_WriteData(pBuff[deblin + numcol]);
-		}
-		deblin += 128;
-	}
-}
-
-void AOLED_DisplayImage_Partial(const char *pBuff, int stLin, int edLin) {
+void AOLED_DisplayImage(const char *pBuff, int stLin, int edLin) {
 	short numcol, numlin, deblin;
 	deblin = 0;
 	for (numlin = stLin; numlin < edLin; numlin++) {

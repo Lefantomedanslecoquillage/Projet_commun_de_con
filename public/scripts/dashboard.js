@@ -1,3 +1,27 @@
+function options(unit) {
+	this.responsive = true,
+	this.maintainAspectRatio = false,
+	this.scales = {
+		x: {
+			type: "time",
+			time: {
+				unit: "minute",
+				displayFormats: { minute: "HH:mm" },
+				tooltipFormat: "dd/MM/yyyy HH:mm"
+			},
+			title: { display: true, text: "Heure" }
+		},
+		y: {
+			type: "logarithmic",
+			title: { display: true, text: unit }
+		}
+	},
+	this.plugins = {
+		tooltip: { mode: "index", intersect: false },
+		legend: { position: "top" }
+	}
+}
+
 const co2Chart = new Chart(document.getElementById("co2Chart"), {
 	type: "line",
 	data: {
@@ -9,30 +33,8 @@ const co2Chart = new Chart(document.getElementById("co2Chart"), {
 			tension: 0.3
 		}]
 	},
-	options: {
-		responsive: true,
-		maintainAspectRatio: false,
-		scales: {
-			x: {
-				type: "time",
-				time: {
-					unit: "minute",
-					displayFormats: { minute: "HH:mm" },
-					tooltipFormat: "dd/MM/yyyy HH:mm"
-				},
-				title: { display: true, text: "Heure" }
-			},
-			y: {
-				type: "logarithmic",
-				title: { display: true, text: "ppm" }
-			}
-		},
-		plugins: {
-			tooltip: { mode: "index", intersect: false },
-			legend: { position: "top" }
-		}
-	}
-});
+	options: new options("ppm")
+})
 
 const ch4Chart = new Chart(document.getElementById("ch4Chart"), {
 	type: "line",
@@ -45,30 +47,8 @@ const ch4Chart = new Chart(document.getElementById("ch4Chart"), {
 			tension: 0.3
 		}]
 	},
-	options: {
-		responsive: true,
-		maintainAspectRatio: false,
-		scales: {
-			x: {
-				type: "time",
-				time: {
-					unit: "minute",
-					displayFormats: { minute: "HH:mm" },
-					tooltipFormat: "dd/MM/yyyy HH:mm"
-				},
-				title: { display: true, text: "Heure" }
-			},
-			y: {
-				type: "logarithmic",
-				title: { display: true, text: "ppb" }
-			}
-		},
-		plugins: {
-			tooltip: { mode: "index", intersect: false },
-			legend: { position: "top" }
-		}
-	}
-});
+	options: new options("ppb")
+})
 
 const vocChart = new Chart(document.getElementById("vocChart"), {
 	type: "line",
@@ -81,46 +61,24 @@ const vocChart = new Chart(document.getElementById("vocChart"), {
 			tension: 0.3
 		}]
 	},
-	options: {
-		responsive: true,
-		maintainAspectRatio: false,
-		scales: {
-			x: {
-				type: "time",
-				time: {
-					unit: "minute",
-					displayFormats: { minute: "HH:mm" },
-					tooltipFormat: "dd/MM/yyyy HH:mm"
-				},
-				title: { display: true, text: "Heure" }
-			},
-			y: {
-				type: "logarithmic",
-				title: { display: true, text: "ppb" }
-			}
-		},
-		plugins: {
-			tooltip: { mode: "index", intersect: false },
-			legend: { position: "top" }
-		}
-	}
-});
+	options: new options("ppb")
+})
 
 let refreshInterval = setInterval(() => {
 	fetch(`index.php?action=dashboard&range=${range}&format=json`)
 		.then(response => {
-			if (!response.ok) throw new Error("Erreur réseau");
-			return response.json();
+			if (!response.ok) throw new Error("Erreur réseau")
+			return response.json()
 		})
 		.then(newData => {
 			co2Chart.data.datasets[0].data = newData.co2;
-			co2Chart.update();
+			co2Chart.update()
 
 			ch4Chart.data.datasets[0].data = newData.ch4;
-			ch4Chart.update();
+			ch4Chart.update()
 
 			vocChart.data.datasets[0].data = newData.voc;
-			vocChart.update();
+			vocChart.update()
 		})
-		.catch(error => console.error("Échec du rafraîchissement :", error));
-}, 5000);
+		.catch(error => console.error("Échec du rafraîchissement :", error))
+}, 5000)

@@ -65,6 +65,10 @@ while True:
 	if not co2:
 		continue
 
+	co2 += 1
+	ch4 += 1
+	voc += 1
+
 	cursor.execute("INSERT INTO CO2 (timestamp, value) VALUES (NOW(), %s)", (co2,))
 	cursor.execute("INSERT INTO CH4 (timestamp, value) VALUES (NOW(), %s)", (ch4,))
 	cursor.execute("INSERT INTO VOC (timestamp, value) VALUES (NOW(), %s)", (voc,))
@@ -72,7 +76,7 @@ while True:
 
 	print(f"{time.strftime('%Y-%m-%d %H:%M:%S')}")
 	print(f"Valeur de CO2 : {co2:>5} ppm")
-	print(f"Valeur de CH4 : {ch4:>5} ppm")
+	print(f"Valeur de CH4 : {ch4:>5} ppb")
 	print(f"Valeur de VOC : {voc:>5} ppb\n")
 
 serial.close()
