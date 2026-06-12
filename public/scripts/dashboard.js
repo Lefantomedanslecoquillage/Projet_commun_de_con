@@ -1,84 +1,69 @@
-function options(unit) {
-	this.responsive = true,
-	this.maintainAspectRatio = false,
-	this.scales = {
-		x: {
-			type: "time",
-			time: {
-				unit: "minute",
-				displayFormats: { minute: "HH:mm" },
-				tooltipFormat: "dd/MM/yyyy HH:mm"
-			},
-			title: { display: true, text: "Heure" }
-		},
-		y: {
-			type: "logarithmic",
-			title: { display: true, text: unit }
-		}
-	},
-	this.plugins = {
-		tooltip: { mode: "index", intersect: false },
-		legend: { position: "top" }
+const sectionCO2 = document.getElementById("sectionCO2")
+const sectionCH4 = document.getElementById("sectionCH4")
+const sectionVOC = document.getElementById("sectionVOC")
+
+function updateSectionAir() {
+	sectionCO2.querySelector(".value").style.display = "none"
+	sectionCO2.querySelector(".evolution").style.display = "none"
+	sectionCO2.querySelector(".status-icon").style.color = "var(--danger-color)"
+	sectionCO2.querySelector(".status").textContent = "Hors ligne"
+
+	sectionCH4.querySelector(".value").style.display = "none"
+	sectionCH4.querySelector(".evolution").style.display = "none"
+	sectionCH4.querySelector(".status-icon").style.color = "var(--danger-color)"
+	sectionCH4.querySelector(".status").textContent = "Hors ligne"
+
+	sectionVOC.querySelector(".value").style.display = "none"
+	sectionVOC.querySelector(".evolution").style.display = "none"
+	sectionVOC.querySelector(".status-icon").style.color = "var(--danger-color)"
+	sectionVOC.querySelector(".status").textContent = "Hors ligne"
+	if (co2Data.length < 2)
+		return
+
+	sectionCO2.querySelector(".value").style.display = "block"
+	sectionCO2.querySelector(".value").textContent = `${co2Data[1]} ppm`
+	sectionCO2.querySelector("progress").value = co2Data[1]
+	const co2Progression = ((co2Data[1] - co2Data[0]) / co2Data[0] * 100).toFixed(2)
+	let co2Symbol = co2Progression > 0 ? "↑ +" : "↓ "
+	sectionCO2.querySelector(".evolution").style.display = "block"
+	sectionCO2.querySelector(".evolution").textContent = `${co2Symbol}${co2Progression} %`
+	if (co2Progression < 1 || co2Progression > -1) {
+		sectionVOC.querySelector(".evolution").textContent = "→ stable"
+	}
+
+	sectionCH4.querySelector(".value").style.display = "block"
+	sectionCH4.querySelector(".value").textContent = `${ch4Data[1]} ppb`
+	sectionCH4.querySelector("progress").value = ch4Data[1]
+	const ch4Progression = ((ch4Data[1] - ch4Data[0]) / ch4Data[0] * 100).toFixed(2)
+	let ch4Symbol = ch4Progression > 0 ? "↑ +" : "↓ "
+	sectionCH4.querySelector(".evolution").style.display = "block"
+	sectionCH4.querySelector(".evolution").textContent = `${ch4Symbol}${ch4Progression} %`
+	if (ch4Progression < 1 || ch4Progression > -1) {
+		sectionVOC.querySelector(".evolution").textContent = "→ stable"
+	}
+
+	sectionVOC.querySelector(".value").style.display = "block"
+	sectionVOC.querySelector(".value").textContent = `${vocData[1]} ppb`
+	sectionVOC.querySelector("progress").value = vocData[1]
+	const vocProgression = ((vocData[1] - vocData[0]) / vocData[0] * 100).toFixed(2)
+	let vocSymbol = vocProgression > 0 ? "↑ +" : "↓ "
+	sectionVOC.querySelector(".evolution").style.display = "block"
+	sectionVOC.querySelector(".evolution").textContent = `${vocSymbol}${vocProgression} %`
+	if (vocProgression < 1 || vocProgression > -1) {
+		sectionVOC.querySelector(".evolution").textContent = "→ stable"
+	}
+	if (Date.now() / 1000 - co2Data[1]["timestamp"] > 60) {
+		return
+
+	sectionCO2.querySelector(".status-icon").style.color = "var(--active-color)"
+	sectionCO2.querySelector(".status").textContent = "En ligne"
+
+	sectionCH4.querySelector(".status-icon").style.color = "var(--active-color)"
+	sectionCH4.querySelector(".status").textContent = "En ligne"
+
+	sectionVOC.querySelector(".status-icon").style.color = "var(--active-color)"
+	sectionVOC.querySelector(".status").textContent = "En ligne"
 	}
 }
 
-const co2Chart = new Chart(document.getElementById("co2Chart"), {
-	type: "line",
-	data: {
-		datasets: [{
-			label: "CO2",
-			data: co2Data,
-			borderColor: "rgb(255, 99, 132)",
-			backgroundColor: "rgba(255, 99, 132, 0.1)",
-			tension: 0.3
-		}]
-	},
-	options: new options("ppm")
-})
-
-const ch4Chart = new Chart(document.getElementById("ch4Chart"), {
-	type: "line",
-	data: {
-		datasets: [{
-			label: "CH4",
-			data: ch4Data,
-			borderColor: "rgb(46, 204, 113)",
-			backgroundColor: "rgba(46, 204, 113, 0.1)",
-			tension: 0.3
-		}]
-	},
-	options: new options("ppb")
-})
-
-const vocChart = new Chart(document.getElementById("vocChart"), {
-	type: "line",
-	data: {
-		datasets: [{
-			label: "VOC",
-			data: vocData,
-			borderColor: "rgb(75, 192, 192)",
-			backgroundColor: "rgba(75, 192, 192, 0.1)",
-			tension: 0.3
-		}]
-	},
-	options: new options("ppb")
-})
-
-let refreshInterval = setInterval(() => {
-	fetch(`index.php?action=dashboard&range=${range}&format=json`)
-		.then(response => {
-			if (!response.ok) throw new Error("Erreur réseau")
-			return response.json()
-		})
-		.then(newData => {
-			co2Chart.data.datasets[0].data = newData.co2;
-			co2Chart.update()
-
-			ch4Chart.data.datasets[0].data = newData.ch4;
-			ch4Chart.update()
-
-			vocChart.data.datasets[0].data = newData.voc;
-			vocChart.update()
-		})
-		.catch(error => console.error("Échec du rafraîchissement :", error))
-}, 5000)
+updateSectionAir();

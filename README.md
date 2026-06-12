@@ -18,7 +18,7 @@ Les valeurs sont disponibles ici :
 
 ## Librairies Arduino
 
-Installez les librairies Seeed Arduino SGP30.
+Installez la librairie Seeed Arduino SGP30.
 
 ## Librairies Python
 

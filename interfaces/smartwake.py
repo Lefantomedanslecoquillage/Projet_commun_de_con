@@ -58,13 +58,18 @@ print(r"""
 
 """)
 
+lastCommitTS = 0
+
 while True:
 	co2 = int(serial.readline().decode("utf-8", errors="ignore").strip())
 	ch4 = int(serial.readline().decode("utf-8", errors="ignore").strip())
 	voc = int(serial.readline().decode("utf-8", errors="ignore").strip())
 
-	cursor.execute(f"INSERT INTO ambient_air (timestamp, CO2, CH4, VOC) VALUES (NOW(), {co2}, {ch4}, {voc})")
-	connection.commit()
+	if (time.time() - lastCommitTS) > 15:
+		cursor.execute(f"INSERT INTO ambient_air (timestamp, CO2, CH4, VOC) VALUES (NOW(), {co2}, {ch4}, {voc})")
+		connection.commit()
+	else:
+		print("Données ignorées")
 
 	print(f"{time.strftime('%Y-%m-%d %H:%M:%S')}")
 	print(f"Valeur de CO2 : {co2:>5} ppm")

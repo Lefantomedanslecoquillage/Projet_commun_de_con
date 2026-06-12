@@ -14,7 +14,7 @@ include_once "header.php";
 	const vocData = <?= json_encode($chartData["voc"], JSON_UNESCAPED_UNICODE) . "\n"; ?>
 	const range = <?= $range . "\n"; ?>
 </script>
-<script defer src="scripts/dashboard.js"></script>
+<script defer src="scripts/dashboardAir.js"></script>
 
 <main>
 	<div class="charts-container">

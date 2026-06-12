@@ -52,7 +52,44 @@ div h1 {
 	width: 60%;
 }
 
+.status-container {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.status-container p {
+	margin-bottom: 0;
+}
+
+.status-icon {
+	padding-bottom: 0.25rem;
+}
+
 .summary-wrapper {
 	display: flex;
 	gap: 1rem;
+}
+
+.summary-wrapper p {
+	margin: 0.5rem 0;
+}
+
+.summary-wrapper div h1{
+	margin-top: 0;
+}
+
+@media (max-width: 1024px) {
+	main {
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.alerts-container {
+		width: 90%;
+	}
+
+	pre {
+		display: none;
+	}
 }

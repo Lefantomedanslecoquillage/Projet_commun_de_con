@@ -12,6 +12,11 @@ class AuthController {
 	}
 
 	public function dashboardMain() {
+		$data = Sensor::getLastTwoData();
+		$co2Values = array_column($data, "CO2");
+		$ch4Values = array_column($data, "CH4");
+		$vocValues = array_column($data, "VOC");
+
 		require __DIR__ . "/../views/dashboard.php";
 	}
 
@@ -19,8 +24,8 @@ class AuthController {
 		$range = isset($_GET["range"]) ? (int)$_GET["range"] : 15;
 		$chartData = Sensor::getDataByRange($range);
 
-		if (isset($_GET['format']) && $_GET['format'] === 'json') {
-			header('Content-Type: application/json');
+		if (isset($_GET["format"]) && $_GET["format"] === "json") {
+			header("Content-Type: application/json");
 			echo json_encode($chartData);
 			exit;
 		}

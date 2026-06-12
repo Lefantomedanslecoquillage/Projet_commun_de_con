@@ -64,7 +64,7 @@ void loop() {
 
 	isAwake = millis() - lastWake > 60000 ? false : true;
 
-	if (millis() - lastFetch > 5000) {
+	if (millis() - lastFetch > 1000) {
 		lastFetch = millis();
 
 		sgp_measure_iaq_blocking_read(&voc, &co2);
