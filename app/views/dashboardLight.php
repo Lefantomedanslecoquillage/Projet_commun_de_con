@@ -1,5 +1,8 @@
 <?php
 include_once "head.html";
 include_once "header.php";
-include_once "homepage.html";
 ?>
+
+<main>
+	<p class="pending">À compléter</p>
+</main>

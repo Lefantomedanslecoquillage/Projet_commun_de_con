@@ -68,10 +68,10 @@ void loop() {
 		lastFetch = millis();
 
 		sgp_measure_iaq_blocking_read(&voc, &co2);
-		ch4 = analogRead(MQ2_PIN);
+		ch4 = analogRead(MQ2_PIN) + 1;
 
 		sprintf(co2_output, "CO2: %d ppm", co2);
-		sprintf(ch4_output, "CH4: %d ppm", ch4);
+		sprintf(ch4_output, "CH4: %d ppb", ch4);
 		sprintf(voc_output, "VOC: %d ppb", voc);
 
 		Serial.println(co2);

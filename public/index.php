@@ -16,6 +16,7 @@ switch ($action) {
 		if (!isset($_SESSION["user"])) {
 			$controller->homepage();
 		} else {
-			$controller->dashboard();
+			if (isset($_GET["section"])) $controller->dashboard($_GET["section"]);
+			else $controller->dashboardMain();
 		}
 }

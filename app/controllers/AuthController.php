@@ -3,7 +3,19 @@ require_once __DIR__ . "/../models/User.php";
 require_once __DIR__ . "/../models/Sensor.php";
 
 class AuthController {
-	public function dashboard() {
+	public function dashboard($section) {
+		if ($section == "air") $this->dashboardAir();
+		else if ($section === "light") $this->dashboardLight();
+		else if ($section === "sound") $this->dashboardSound();
+		else if ($section === "environment") $this->dashboardEnvironment();
+		else $this->dashboardMain();
+	}
+
+	public function dashboardMain() {
+		require __DIR__ . "/../views/dashboard.php";
+	}
+
+	public function dashboardAir() {
 		$range = isset($_GET["range"]) ? (int)$_GET["range"] : 15;
 		$chartData = Sensor::getDataByRange($range);
 
@@ -13,7 +25,19 @@ class AuthController {
 			exit;
 		}
 
-		require __DIR__ . "/../views/dashboard.php";
+		require __DIR__ . "/../views/dashboardAir.php";
+	}
+
+	public function dashboardLight() {
+		require __DIR__ . "/../views/dashboardLight.php";
+	}
+
+	public function dashboardSound() {
+		require __DIR__ . "/../views/dashboardSound.php";
+	}
+
+	public function dashboardEnvironment() {
+		require __DIR__ . "/../views/dashboardEnvironment.php";
 	}
 
 	public function homepage() {

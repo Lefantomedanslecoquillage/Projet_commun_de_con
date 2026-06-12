@@ -6,6 +6,7 @@
 		--link-color: #669DF1;
 		--danger-color: #F87168;
 		--active-color: #4BCE97;
+		--pending-color: #E774BB;
 	}
 
 	.icon {
@@ -25,6 +26,7 @@
 		--link-color: #357DE8;
 		--danger-color: #C9372C;
 		--active-color: #22A06B;
+		--pending-color: #AE4787;
 	}
 
 	.icon {
@@ -41,6 +43,10 @@ html {
 	color: var(--fg-color);
 }
 
+body {
+	margin: 0;
+}
+
 main {
 	display: flex;
 	flex-direction: column;
@@ -48,10 +54,6 @@ main {
 
 	margin: 2rem auto;
 	width: fit-content;
-}
-
-.danger, .error {
-	color: var(--danger-color);
 }
 
 .icon {
@@ -72,6 +74,14 @@ main {
 
 .icon-btn:hover {
 	color: var(--link-color);
+}
+
+.danger, .error {
+	color: var(--danger-color);
+}
+
+.pending {
+	color: var(--pending-color) !important;
 }
 
 @media (max-width: 768px) {

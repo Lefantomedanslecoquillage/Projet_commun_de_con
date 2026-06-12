@@ -1,48 +1,58 @@
-.charts-container {
-	display: flex;
-	flex-direction: column;
-	gap: 4rem;
+main {
+	flex-direction: row;
+	justify-content: space-around;
+	gap: 0;
 
-	width: 90vw;
+	width: 100vw;
 }
 
-.chart-wrapper {
-	min-height: 20vh;
+div h1 {
+	font-size: 1.5rem;
 }
 
-.range-buttons {
-	display: flex;
-	justify-content: center;
-	gap: 2rem;
-
-	witdh: 90vw;
-}
-
-.range-buttons a {
-	border: 1px solid var(--fg-color);
-	border-radius: 0.5rem;
-	padding: 1rem;
-
+.btn {
 	color: var(--fg-color);
 	text-decoration: none;
+
+	cursor: pointer;
+	user-select: none;
 }
 
-.range-buttons a.active {
-	border-color: var(--active-color);
-	color: var(--active-color);
-}
-
-.range-buttons a:hover {
-	border-color: var(--link-color);
+.btn:hover {
 	color: var(--link-color);
+	border-color: var(--link-color);
 }
 
-@media (max-width: 768px) {
-	.charts-container {
-		gap: 1.5rem;
-	}
+.btn:hover div > * {
+	color: var(--fg-color);
+	border-color: var(--fg-color);
+}
 
-	.range-buttons a {
-		padding: 0.5rem;
-	}
+.ctn {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+
+	border: 1px solid var(--fg-color);
+	border-radius: 1rem;
+
+	padding: 1rem;
+	width: fit-content;
+}
+
+.alerts-container {
+	width: 30%;
+}
+
+.sensors-container {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+
+	width: 60%;
+}
+
+.summary-wrapper {
+	display: flex;
+	gap: 1rem;
 }
