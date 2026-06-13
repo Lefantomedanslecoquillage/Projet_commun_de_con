@@ -65,20 +65,20 @@ const vocChart = new Chart(document.getElementById("vocChart"), {
 })
 
 let refreshInterval = setInterval(() => {
-	fetch(`index.php?action=dashboard&range=${range}&format=json`)
+	fetch(`index.php?section=air&range=${range}&format=json`)
 		.then(response => {
 			if (!response.ok) throw new Error("Erreur réseau")
 			return response.json()
 		})
 		.then(newData => {
-			co2Chart.data.datasets[0].data = newData.co2;
+			co2Chart.data.datasets[0].data = newData.co2
 			co2Chart.update()
 
-			ch4Chart.data.datasets[0].data = newData.ch4;
+			ch4Chart.data.datasets[0].data = newData.ch4
 			ch4Chart.update()
 
-			vocChart.data.datasets[0].data = newData.voc;
+			vocChart.data.datasets[0].data = newData.voc
 			vocChart.update()
 		})
 		.catch(error => console.error("Échec du rafraîchissement :", error))
-}, 5000)
+}, 15000)

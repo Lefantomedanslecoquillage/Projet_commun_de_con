@@ -1,3 +1,8 @@
+@font-face {
+	font-family: "Noto Sans";
+	src: url("/fonts/NotoSans.woff2");
+}
+
 @media (prefers-color-scheme: dark) {
 	:root {
 		--bg-color: #1F1F21;
@@ -42,7 +47,7 @@ html {
 	background-color: var(--bg-color);
 	color: var(--fg-color);
 
-	font-family: sans-serif;
+	font-family: "Noto Sans", Arial, sans-serif;
 }
 
 body {

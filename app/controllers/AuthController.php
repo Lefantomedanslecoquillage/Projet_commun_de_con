@@ -13,9 +13,16 @@ class AuthController {
 
 	public function dashboardMain() {
 		$data = Sensor::getLastTwoData();
+
 		$co2Values = array_column($data, "CO2");
 		$ch4Values = array_column($data, "CH4");
 		$vocValues = array_column($data, "VOC");
+
+		if (isset($_GET["format"]) && $_GET["format"] === "json") {
+			header("Content-Type: application/json");
+			echo json_encode(["co2" => $co2Values, "ch4" => $ch4Values, "voc" => $vocValues]);
+			exit;
+		}
 
 		require __DIR__ . "/../views/dashboard.php";
 	}
