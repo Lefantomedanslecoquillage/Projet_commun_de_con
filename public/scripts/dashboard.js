@@ -52,6 +52,7 @@ function updateSectionAir() {
 	if (vocProgression == 0) {
 		sectionVOC.querySelector(".evolution").textContent = "→ stable"
 	}
+	console.log(Date.now() / 1000 - co2Data[1]["timestamp"])
 	if (Date.now() / 1000 - co2Data[1]["timestamp"] > 60) {
 		return
 

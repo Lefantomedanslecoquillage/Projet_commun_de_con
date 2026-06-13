@@ -1,6 +1,11 @@
 @font-face {
-	font-family: "Noto Sans";
-	src: url("/fonts/NotoSans.woff2");
+	font-family: "Atlassian Sans";
+	src: url("/fonts/AtlassianSans.woff2");
+}
+
+@font-face {
+	font-family: "Atlassian Mono";
+	src: url("/fonts/AtlassianMono.woff2");
 }
 
 @media (prefers-color-scheme: dark) {
@@ -47,7 +52,7 @@ html {
 	background-color: var(--bg-color);
 	color: var(--fg-color);
 
-	font-family: "Noto Sans", Arial, sans-serif;
+	font-family: "Atlassian Sans", Arial, sans-serif;
 }
 
 body {
