@@ -10,13 +10,21 @@
 
 @media (prefers-color-scheme: dark) {
 	:root {
-		--bg-color: #1F1F21;
-		--fg-color: #CECFD2;
 
-		--link-color: #669DF1;
-		--danger-color: #F87168;
-		--active-color: #4BCE97;
-		--pending-color: #E774BB;
+		--bg-color: #F6F2EA;
+		--bg-secondary: #ECE4D8;
+
+		--fg-color: #332821;
+		--fg-secondary: #67584A;
+
+		--link-color: #8B6B4A;
+
+		--border-color: #CFC2B2;
+
+		--danger-color: #B35C44;
+		--active-color: #6C8A64;
+
+		--pending-color: #A35A7A;
 	}
 
 	.icon {

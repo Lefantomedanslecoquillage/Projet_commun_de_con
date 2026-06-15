@@ -1,0 +1,433 @@
+.homepage {
+    width: min(1200px, 90%);
+    margin: auto;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 6rem;
+}
+
+/* ========================================
+   HERO
+======================================== */
+
+.hero {
+    position: relative;
+
+    min-height: 82vh;
+
+    display: flex;
+    align-items: center;
+
+    padding: 5rem;
+
+    overflow: hidden;
+
+    border-radius: 12px;
+
+    background-image: url("../images/homepage.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.hero::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(22, 18, 15, 0.82) 0%,
+            rgba(22, 18, 15, 0.58) 45%,
+            rgba(22, 18, 15, 0.20) 100%
+        );
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+
+    max-width: 700px;
+}
+
+.hero-label {
+    margin: 0;
+
+    color: #d8b48c;
+
+    font-family: "Atlassian Mono";
+
+    text-transform: uppercase;
+
+    letter-spacing: .25rem;
+
+    font-size: .8rem;
+}
+
+.hero h1 {
+    margin: 1rem 0;
+
+    color: white;
+
+    font-size: clamp(4rem, 8vw, 6rem);
+
+    font-weight: 300;
+
+    line-height: 1;
+
+    letter-spacing: -.04em;
+}
+
+.hero-description {
+    max-width: 620px;
+
+    color: rgba(255,255,255,.9);
+
+    font-size: 1.15rem;
+
+    line-height: 1.9;
+}
+
+.hero-actions {
+    margin-top: 2.5rem;
+}
+
+/* ========================================
+   BOUTON
+======================================== */
+
+.primary-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 1rem 2rem;
+
+    background: #e6d4bf;
+
+    border: 1px solid #d4bea4;
+
+    border-radius: 6px;
+
+    color: #2f261f;
+
+    text-decoration: none;
+
+    font-weight: 500;
+
+    cursor: pointer;
+
+    transition:
+        background-color .25s ease,
+        border-color .25s ease,
+        transform .25s ease;
+}
+
+.primary-btn:hover {
+    background: #efdfce;
+
+    border-color: #c79f74;
+
+    transform: translateY(-2px);
+}
+
+/* ========================================
+   LABELS COMMUNS
+======================================== */
+
+.section-label {
+    margin-bottom: 1rem;
+
+    color: #b88c61;
+
+    text-transform: uppercase;
+
+    letter-spacing: .2rem;
+
+    font-size: .8rem;
+
+    font-family: "Atlassian Mono";
+}
+
+.section-header {
+    margin-bottom: 3rem;
+}
+
+.section-header h2 {
+    margin: 0;
+
+    font-size: clamp(2rem, 4vw, 3rem);
+
+    font-weight: 400;
+
+    color: var(--fg-color);
+}
+
+/* ========================================
+   INTRO
+======================================== */
+
+.intro {
+    max-width: 850px;
+
+    margin: auto;
+
+    text-align: center;
+}
+
+.intro h2 {
+    margin: .5rem 0 1.5rem;
+
+    font-size: clamp(2rem, 4vw, 3rem);
+
+    font-weight: 400;
+
+    color: var(--fg-color);
+}
+
+.intro p:last-child {
+    color: var(--fg-secondary);
+
+    line-height: 1.9;
+
+    font-size: 1.05rem;
+}
+
+/* ========================================
+   SENSORS
+======================================== */
+
+.sensors {
+    position: relative;
+
+    padding: 4rem;
+
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(230,212,191,.15),
+            rgba(230,212,191,.04)
+        );
+}
+
+.sensor-grid {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 1.5rem;
+}
+
+.sensor-card {
+    padding: 2rem;
+
+    background: rgba(255,255,255,.6);
+
+    backdrop-filter: blur(8px);
+
+    border: 1px solid rgba(200,170,140,.15);
+
+    border-radius: 8px;
+
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease;
+}
+
+.sensor-card:hover {
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 15px 30px rgba(58,47,40,.06);
+}
+
+.sensor-card h3 {
+    margin-top: 0;
+
+    margin-bottom: .8rem;
+
+    color: var(--fg-color);
+}
+
+.sensor-card p {
+    margin: 0;
+
+    line-height: 1.8;
+
+    color: var(--fg-secondary);
+}
+
+/* ========================================
+   QUOTE
+======================================== */
+
+.quote-section {
+    text-align: center;
+
+    padding: 2rem 0;
+}
+
+.quote-section blockquote {
+    max-width: 900px;
+
+    margin: auto;
+
+    color: #8d6a49;
+
+    font-size: clamp(2rem, 4vw, 3rem);
+
+    font-weight: 300;
+
+    line-height: 1.5;
+}
+
+/* ========================================
+   JOURNEY
+======================================== */
+
+.journey {
+    padding: 2rem 0;
+}
+
+.journey-grid {
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 2rem;
+}
+
+.journey-step {
+    padding: 2rem;
+
+    background: #faf6f0;
+
+    border-radius: 8px;
+
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease;
+}
+
+.journey-step:hover {
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 15px 30px rgba(58,47,40,.05);
+}
+
+.journey-step span {
+    display: inline-block;
+
+    margin-bottom: 1rem;
+
+    color: #b88c61;
+
+    font-family: "Atlassian Mono";
+}
+
+.journey-step h3 {
+    margin-top: 0;
+
+    margin-bottom: .75rem;
+
+    color: var(--fg-color);
+}
+
+.journey-step p {
+    margin: 0;
+
+    line-height: 1.8;
+
+    color: var(--fg-secondary);
+}
+
+/* ========================================
+   CTA
+======================================== */
+
+.cta {
+    padding: 5rem;
+
+    text-align: center;
+
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #f8f4ee,
+            #f3ede5
+        );
+}
+
+.cta h2 {
+    margin: .5rem 0 1rem;
+
+    font-size: clamp(2rem, 4vw, 3rem);
+
+    font-weight: 400;
+
+    color: var(--fg-color);
+}
+
+.cta p {
+    max-width: 700px;
+
+    margin: 0 auto 2rem;
+
+    color: var(--fg-secondary);
+
+    line-height: 1.9;
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 1024px) {
+
+    .hero {
+        padding: 4rem 3rem;
+    }
+
+    .sensor-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .journey-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .homepage {
+        width: 92%;
+    }
+
+    .hero {
+        min-height: auto;
+
+        padding: 4rem 2rem;
+    }
+
+    .hero h1 {
+        font-size: 3.5rem;
+    }
+
+    .sensors,
+    .cta {
+        padding: 2rem;
+    }
+
+    .quote-section blockquote {
+        font-size: 1.8rem;
+    }
+}
