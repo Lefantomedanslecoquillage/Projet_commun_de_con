@@ -60,23 +60,24 @@ print(r"""
 
 lastCommitTS = 0
 
-while True:
-	co2 = int(serial.readline().decode("utf-8", errors="ignore").strip())
-	ch4 = int(serial.readline().decode("utf-8", errors="ignore").strip())
-	voc = int(serial.readline().decode("utf-8", errors="ignore").strip())
+try:
+	while True:
+		co2 = int(serial.readline().decode("utf-8", errors="ignore").strip())
+		ch4 = int(serial.readline().decode("utf-8", errors="ignore").strip())
+		voc = int(serial.readline().decode("utf-8", errors="ignore").strip())
 
-	if (time.time() - lastCommitTS) > 15:
-		cursor.execute(f"INSERT INTO ambient_air (timestamp, CO2, CH4, VOC) VALUES (NOW(), {co2}, {ch4}, {voc})")
-		connection.commit()
-	else:
-		print("Données ignorées")
+		if (time.time() - lastCommitTS) > 15:
+			cursor.execute(f"INSERT INTO ambient_air (timestamp, CO2, CH4, VOC) VALUES (NOW(), {co2}, {ch4}, {voc})")
+			connection.commit()
+			lastCommitTS = time.time()
+		else:
+			print("Données ignorées")
 
-	print(f"{time.strftime('%Y-%m-%d %H:%M:%S')}")
-	print(f"Valeur de CO2 : {co2:>5} ppm")
-	print(f"Valeur de CH4 : {ch4:>5} ppb")
-	print(f"Valeur de VOC : {voc:>5} ppb\n")
-
-serial.close()
-
-cursor.close()
-connection.close()
+		print(f"{time.strftime('%Y-%m-%d %H:%M:%S')}")
+		print(f"Valeur de CO2 : {co2:>5} ppm")
+		print(f"Valeur de CH4 : {ch4:>5} ppb")
+		print(f"Valeur de VOC : {voc:>5} ppb\n")
+except KeyboardInterrupt:
+	serial.close()
+	cursor.close()
+	connection.close()

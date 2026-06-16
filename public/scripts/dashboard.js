@@ -52,9 +52,12 @@ function updateSectionAir() {
 	if (vocProgression == 0) {
 		sectionVOC.querySelector(".evolution").textContent = "→ stable"
 	}
-	console.log(Date.now() / 1000 - co2Data[1]["timestamp"])
-	if (Date.now() / 1000 - co2Data[1]["timestamp"] > 60) {
+
+	const utcDateStr = tsData[1].replace(" ", "T") + "Z"
+	const timestampMs = Date.parse(utcDateStr)
+	if (Date.now() - timestampMs > 60_000) {
 		return
+	}
 
 	sectionCO2.querySelector(".status-icon").style.color = "var(--active-color)"
 	sectionCO2.querySelector(".status").textContent = "En ligne"
@@ -64,7 +67,6 @@ function updateSectionAir() {
 
 	sectionVOC.querySelector(".status-icon").style.color = "var(--active-color)"
 	sectionVOC.querySelector(".status").textContent = "En ligne"
-	}
 }
 
 let refreshInterval = setInterval(() => {
@@ -74,6 +76,7 @@ let refreshInterval = setInterval(() => {
 			return response.json()
 		})
 		.then(newData => {
+			tsData = newData.ts
 			co2Data = newData.co2
 			ch4Data = newData.ch4
 			vocData = newData.voc
