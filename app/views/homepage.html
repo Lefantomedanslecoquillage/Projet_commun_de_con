@@ -1,8 +1,174 @@
-<main>
-	<div>
-		<p>Bienvenue dans ce projet ridicule digne de participer au concours Lépine.</p>
-		<p>En plus d'être inutile, pourquoi ne pas la rendre aussi impratique,
-			donc commencer par vous connecter.</p>
-	</div>
-	<p class="pending">À compléter</p>
+<main class="homepage">
+
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <p class="hero-label">
+                Projet électronique & informatique
+            </p>
+
+            <h1>
+                SmartWake
+            </h1>
+
+            <p class="hero-description">
+                Comprendre l'environnement nocturne pour mieux analyser les
+                conditions qui entourent le sommeil et le réveil.
+            </p>
+
+            <div class="hero-actions">
+
+                <?php if (isset($_SESSION["user"])): ?>
+                    <a href="index.php?section=dashboard" class="primary-btn">
+                        Accéder au tableau de bord
+                    </a>
+                <?php else: ?>
+                    <button id="homepageLoginBtn" class="primary-btn">
+                        Se connecter
+                    </button>
+                <?php endif; ?>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="intro">
+
+        <p class="section-label">
+            Une meilleure compréhension du sommeil
+        </p>
+
+        <h2>
+            Chaque sommeil est unique.
+        </h2>
+
+        <p>
+            La qualité de l'air, la luminosité, le bruit ou encore la température
+            évoluent constamment au cours de la nuit. SmartWake collecte ces
+            informations afin de mieux comprendre les conditions qui influencent
+            le repos et le réveil.
+        </p>
+
+    </section>
+
+    <section class="sensors">
+
+        <div class="section-header">
+
+            <p class="section-label">
+                Observation
+            </p>
+
+            <h2>
+                Une vision globale de l'environnement.
+            </h2>
+
+        </div>
+
+        <div class="sensor-grid">
+
+            <article class="sensor-card">
+                <h3>Qualité de l'air</h3>
+                <p>
+                    Surveillance du CO₂, du CH₄ et des composés organiques volatils.
+                </p>
+            </article>
+
+            <article class="sensor-card">
+                <h3>Niveau sonore</h3>
+                <p>
+                    Détection des perturbations acoustiques durant la nuit.
+                </p>
+            </article>
+
+            <article class="sensor-card">
+                <h3>Luminosité</h3>
+                <p>
+                    Analyse de l'éclairage ambiant et de son évolution.
+                </p>
+            </article>
+
+            <article class="sensor-card">
+                <h3>Confort</h3>
+                <p>
+                    Température, humidité et indicateurs environnementaux.
+                </p>
+            </article>
+
+        </div>
+
+    </section>
+
+    <section class="quote-section">
+
+        <blockquote>
+            « La qualité du sommeil dépend de nombreux facteurs, SmartWake les observe pour vous. »
+        </blockquote>
+
+    </section>
+
+    <section class="journey">
+
+        <div class="section-header">
+
+            <p class="section-label">
+                Fonctionnement
+            </p>
+
+            <h2>
+                De la mesure à l'analyse.
+            </h2>
+
+        </div>
+
+        <div class="journey-grid">
+
+            <div class="journey-step">
+                <span>01</span>
+                <h3>Mesure</h3>
+                <p>Collecte continue des données des capteurs.</p>
+            </div>
+
+            <div class="journey-step">
+                <span>02</span>
+                <h3>Analyse</h3>
+                <p>Traitement et suivi des variations observées.</p>
+            </div>
+
+            <div class="journey-step">
+                <span>03</span>
+                <h3>Réveil</h3>
+                <p>Exploitation des données collectées.</p>
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="cta">
+
+        <p class="section-label">
+            SmartWake
+        </p>
+
+        <h2>
+            Explorez votre environnement nocturne.
+        </h2>
+
+        <p>
+            Consultez les données collectées et découvrez l'évolution de votre
+            environnement au fil du temps.
+        </p>
+
+        <?php if (isset($_SESSION["user"])): ?>
+            <a href="index.php?section=dashboard" class="primary-btn">
+                Accéder au tableau de bord
+            </a>
+        <?php endif; ?>
+
+    </section>
+
 </main>
