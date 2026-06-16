@@ -4,7 +4,7 @@ class Database {
 
 	public static function getConnection() {
 		if (self::$pdo === null) {
-			$configPath = __DIR__ . "/../../config.ini";
+			$configPath = __DIR__ . "/config.ini";
 			if (file_exists($configPath)) {
 				$config = parse_ini_file($configPath, true);
 				$db = $config["database"];
