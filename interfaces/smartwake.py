@@ -8,7 +8,7 @@ import serial
 
 # get config file
 root_path = pathlib.Path(__file__).parent.absolute()
-config_path = root_path / "../config.ini"
+config_path = root_path / ".." / "app" / "models" / "config.ini"
 if not pathlib.Path(config_path).is_file():
 	raise FileNotFoundError(f"Le fichier de configuration '{config_path}' est introuvable.")
 
