@@ -1,6 +1,6 @@
 <?php
-include_once "head.html";
-include_once "header.php";
+include_once __DIR__ . "/head.html";
+include_once __DIR__ . "/header.php";
 ?>
 
 <link rel="stylesheet" href="/styles/homepage.css">
@@ -9,4 +9,4 @@ include_once "header.php";
 <?php
 include_once "homepage.html";
 ?>
-<?php include_once "footer.php"; ?>
+<?php include_once __DIR__ . "/footer.php"; ?>

@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . "/../models/User.php";
 require_once __DIR__ . "/../models/Sensor.php";
+require_once __DIR__ . "/../models/Database.php";
 
 class AuthController {
 	public function dashboard($section) {
@@ -12,7 +13,14 @@ class AuthController {
 	}
 
 	public function dashboardMain() {
-		$data = Sensor::getLastTwoData();
+		$data = array_reverse(Sensor::getLastTwoData());
+		$pdo = Database::getConnection();
+
+		$weatherCurrentStmt = $pdo->query("SELECT temperature, humidite FROM groupe_4B ORDER BY horodatage DESC LIMIT 1");
+		$weatherCurrent = $weatherCurrentStmt->fetch(PDO::FETCH_ASSOC) ?: ["temperature" => null, "humidite" => null];
+
+		$weatherPreviousStmt = $pdo->query("SELECT temperature, humidite FROM groupe_4B ORDER BY horodatage DESC LIMIT 1 OFFSET 1");
+		$weatherPrevious = $weatherPreviousStmt->fetch(PDO::FETCH_ASSOC) ?: ["temperature" => null, "humidite" => null];
 
 		$tsValues = array_column($data, "timestamp");
 		$co2Values = array_column($data, "CO2");
@@ -21,7 +29,16 @@ class AuthController {
 
 		if (isset($_GET["format"]) && $_GET["format"] === "json") {
 			header("Content-Type: application/json");
-			echo json_encode(["ts" => $tsValues, "co2" => $co2Values, "ch4" => $ch4Values, "voc" => $vocValues]);
+			echo json_encode([
+				"ts" => $tsValues,
+				"co2" => $co2Values,
+				"ch4" => $ch4Values,
+				"voc" => $vocValues,
+				"temperature" => $weatherCurrent["temperature"],
+				"humidite" => $weatherCurrent["humidite"],
+				"previousTemperature" => $weatherPrevious["temperature"],
+				"previousHumidite" => $weatherPrevious["humidite"]
+			], JSON_UNESCAPED_UNICODE);
 			exit;
 		}
 

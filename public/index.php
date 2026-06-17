@@ -1,22 +1,29 @@
 <?php
 session_start();
+
 require_once __DIR__ . "/../app/controllers/AuthController.php";
+require_once __DIR__ . "/../app/models/Database.php";
 
 $action = $_GET["action"] ?? "";
 $controller = new AuthController();
 
 switch ($action) {
-	case "login":
-		$controller->login();
-		break;
-	case "logout":
-		$controller->logout();
-		break;
-	default:
-		if (!isset($_SESSION["user"])) {
-			$controller->homepage();
-		} else {
-			if (isset($_GET["section"])) $controller->dashboard($_GET["section"]);
-			else $controller->dashboardMain();
-		}
+    case "login":
+        $controller->login();
+        break;
+
+    case "logout":
+        $controller->logout();
+        break;
+
+    default:
+        if (!isset($_SESSION["user"])) {
+            $controller->homepage();
+        } else {
+            if (isset($_GET["section"])) {
+                $controller->dashboard($_GET["section"]);
+            } else {
+                $controller->dashboardMain();
+            }
+        }
 }

@@ -1,6 +1,6 @@
 <?php
-include_once "head.html";
-include_once "header.php";
+include_once __DIR__ . "/head.html";
+include_once __DIR__ . "/header.php";
 ?>
 
 <main>

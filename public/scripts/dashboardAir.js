@@ -65,7 +65,7 @@ const vocChart = new Chart(document.getElementById("vocChart"), {
 })
 
 let refreshInterval = setInterval(() => {
-	fetch(`index.php?section=air&range=${range}&format=json`)
+	fetch(`index.php?section=air&range=${range}&format=json`, { cache: "no-store" })
 		.then(response => {
 			if (!response.ok) throw new Error("Erreur réseau")
 			return response.json()

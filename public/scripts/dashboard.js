@@ -1,89 +1,192 @@
 const sectionCO2 = document.getElementById("sectionCO2")
 const sectionCH4 = document.getElementById("sectionCH4")
 const sectionVOC = document.getElementById("sectionVOC")
+const temperatureValue = document.getElementById("temperatureValue")
+const temperatureEvolution = document.getElementById("temperatureEvolution")
+const humidityValue = document.getElementById("humidityValue")
+const humidityEvolution = document.getElementById("humidityEvolution")
+
+function setOffline(section) {
+    const valueElement = section?.querySelector(".value")
+    const evolutionElement = section?.querySelector(".evolution")
+    const statusIconElement = section?.querySelector(".status-icon")
+    const statusElement = section?.querySelector(".status")
+
+    if (valueElement) valueElement.style.display = "none"
+    if (evolutionElement) evolutionElement.style.display = "none"
+    if (statusIconElement) statusIconElement.style.color = "var(--danger-color)"
+    if (statusElement) statusElement.textContent = "Hors ligne"
+}
+
+function setOnline(section) {
+    const statusIconElement = section?.querySelector(".status-icon")
+    const statusElement = section?.querySelector(".status")
+
+    if (statusIconElement) statusIconElement.style.color = "var(--active-color)"
+    if (statusElement) statusElement.textContent = "En ligne"
+}
+
+function updateGasSection(section, data, unit) {
+    if (!section || !Array.isArray(data) || data.length < 2) {
+        setOffline(section)
+        return
+    }
+
+    const previousRaw = data[data.length - 2]
+    const latestRaw = data[data.length - 1]
+
+    if (previousRaw === null || previousRaw === undefined || latestRaw === null || latestRaw === undefined) {
+        setOffline(section)
+        return
+    }
+
+    const previousValue = Number(previousRaw)
+    const latestValue = Number(latestRaw)
+
+    if (Number.isNaN(previousValue) || Number.isNaN(latestValue)) {
+        setOffline(section)
+        return
+    }
+
+    const valueElement = section.querySelector(".value")
+    const evolutionElement = section.querySelector(".evolution")
+    const progressElement = section.querySelector("progress")
+
+    if (valueElement) {
+        valueElement.style.display = "block"
+        valueElement.textContent = `${latestValue} ${unit}`
+    }
+
+    if (progressElement) {
+        progressElement.value = latestValue
+    }
+
+    if (!evolutionElement) {
+        return
+    }
+
+    evolutionElement.style.display = "block"
+
+    if (previousValue === 0) {
+        evolutionElement.textContent = "→ stable"
+        return
+    }
+
+    const progression = ((latestValue - previousValue) / previousValue * 100).toFixed(2)
+
+    if (Number(progression) > 0) {
+        evolutionElement.textContent = `↗ +${progression} %`
+    } else if (Number(progression) < 0) {
+        evolutionElement.textContent = `↘ ${progression} %`
+    } else {
+        evolutionElement.textContent = "→ stable"
+    }
+}
+
+function updateWeatherSection(latestValue, previousValue, unit, valueElement, evolutionElement) {
+    if (!valueElement || !evolutionElement || latestValue === null || latestValue === undefined) {
+        return
+    }
+
+    const latestNumericValue = Number(latestValue)
+    const previousNumericValue = previousValue === null || previousValue === undefined ? null : Number(previousValue)
+
+    if (Number.isNaN(latestNumericValue)) {
+        return
+    }
+
+    valueElement.textContent = `${latestNumericValue} ${unit}`
+
+    if (previousNumericValue === null || Number.isNaN(previousNumericValue)) {
+        evolutionElement.textContent = "→ stable"
+        return
+    }
+
+    const variation = latestNumericValue - previousNumericValue
+    const formattedVariation = Math.abs(variation).toFixed(2)
+
+    if (variation > 0) {
+        evolutionElement.textContent = `↗ +${formattedVariation} ${unit}`
+    } else if (variation < 0) {
+        evolutionElement.textContent = `↘ -${formattedVariation} ${unit}`
+    } else {
+        evolutionElement.textContent = "→ stable"
+    }
+}
+
+function isRecentData() {
+    if (!Array.isArray(tsData) || tsData.length < 1) {
+        return false
+    }
+
+    const latestTimestamp = tsData[tsData.length - 1]
+
+    if (typeof latestTimestamp !== "string" || latestTimestamp.trim() === "") {
+        return false
+    }
+
+    const utcDateStr = latestTimestamp.replace(" ", "T") + "Z"
+    const timestampMs = Date.parse(utcDateStr)
+
+    if (Number.isNaN(timestampMs)) {
+        return false
+    }
+
+    return Date.now() - timestampMs <= 60_000
+}
 
 function updateSectionAir() {
-	sectionCO2.querySelector(".value").style.display = "none"
-	sectionCO2.querySelector(".evolution").style.display = "none"
-	sectionCO2.querySelector(".status-icon").style.color = "var(--danger-color)"
-	sectionCO2.querySelector(".status").textContent = "Hors ligne"
+    setOffline(sectionCO2)
+    setOffline(sectionCH4)
+    setOffline(sectionVOC)
 
-	sectionCH4.querySelector(".value").style.display = "none"
-	sectionCH4.querySelector(".evolution").style.display = "none"
-	sectionCH4.querySelector(".status-icon").style.color = "var(--danger-color)"
-	sectionCH4.querySelector(".status").textContent = "Hors ligne"
+    updateGasSection(sectionCO2, co2Data, "ppm")
+    updateGasSection(sectionCH4, ch4Data, "ppb")
+    updateGasSection(sectionVOC, vocData, "ppb")
 
-	sectionVOC.querySelector(".value").style.display = "none"
-	sectionVOC.querySelector(".evolution").style.display = "none"
-	sectionVOC.querySelector(".status-icon").style.color = "var(--danger-color)"
-	sectionVOC.querySelector(".status").textContent = "Hors ligne"
-	if (co2Data.length < 2)
-		return
+    if (!isRecentData()) {
+        return
+    }
 
-	sectionCO2.querySelector(".value").style.display = "block"
-	sectionCO2.querySelector(".value").textContent = `${co2Data[1]} ppm`
-	sectionCO2.querySelector("progress").value = co2Data[1]
-	const co2Progression = ((co2Data[1] - co2Data[0]) / co2Data[0] * 100).toFixed(2)
-	let co2Symbol = co2Progression > 0 ? "↗ +" : "↘ "
-	sectionCO2.querySelector(".evolution").style.display = "block"
-	sectionCO2.querySelector(".evolution").textContent = `${co2Symbol}${co2Progression} %`
-	if (co2Progression == 0) {
-		sectionVOC.querySelector(".evolution").textContent = "→ stable"
-	}
+    setOnline(sectionCO2)
+    setOnline(sectionCH4)
+    setOnline(sectionVOC)
+}
 
-	sectionCH4.querySelector(".value").style.display = "block"
-	sectionCH4.querySelector(".value").textContent = `${ch4Data[1]} ppb`
-	sectionCH4.querySelector("progress").value = ch4Data[1]
-	const ch4Progression = ((ch4Data[1] - ch4Data[0]) / ch4Data[0] * 100).toFixed(2)
-	let ch4Symbol = ch4Progression > 0 ? "↗ +" : "↘ "
-	sectionCH4.querySelector(".evolution").style.display = "block"
-	sectionCH4.querySelector(".evolution").textContent = `${ch4Symbol}${ch4Progression} %`
-	if (ch4Progression == 0) {
-		sectionVOC.querySelector(".evolution").textContent = "→ stable"
-	}
+function updateDashboardWeather(data) {
+    if (!data || typeof data !== "object") {
+        return
+    }
 
-	sectionVOC.querySelector(".value").style.display = "block"
-	sectionVOC.querySelector(".value").textContent = `${vocData[1]} ppb`
-	sectionVOC.querySelector("progress").value = vocData[1]
-	const vocProgression = ((vocData[1] - vocData[0]) / vocData[0] * 100).toFixed(2)
-	let vocSymbol = vocProgression > 0 ? "↗ +" : "↘ "
-	sectionVOC.querySelector(".evolution").style.display = "block"
-	sectionVOC.querySelector(".evolution").textContent = `${vocSymbol}${vocProgression} %`
-	if (vocProgression == 0) {
-		sectionVOC.querySelector(".evolution").textContent = "→ stable"
-	}
-
-	const utcDateStr = tsData[1].replace(" ", "T") + "Z"
-	const timestampMs = Date.parse(utcDateStr)
-	if (Date.now() - timestampMs > 60_000) {
-		return
-	}
-
-	sectionCO2.querySelector(".status-icon").style.color = "var(--active-color)"
-	sectionCO2.querySelector(".status").textContent = "En ligne"
-
-	sectionCH4.querySelector(".status-icon").style.color = "var(--active-color)"
-	sectionCH4.querySelector(".status").textContent = "En ligne"
-
-	sectionVOC.querySelector(".status-icon").style.color = "var(--active-color)"
-	sectionVOC.querySelector(".status").textContent = "En ligne"
+    updateWeatherSection(data.temperature, data.previousTemperature, "°C", temperatureValue, temperatureEvolution)
+    updateWeatherSection(data.humidite, data.previousHumidite, "%", humidityValue, humidityEvolution)
 }
 
 let refreshInterval = setInterval(() => {
-	fetch(`index.php?format=json`)
-		.then(response => {
-			if (!response.ok) throw new Error("Erreur réseau")
-			return response.json()
-		})
-		.then(newData => {
-			tsData = newData.ts
-			co2Data = newData.co2
-			ch4Data = newData.ch4
-			vocData = newData.voc
+    fetch("index.php?format=json", { cache: "no-store" })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Erreur réseau")
+            }
 
-			updateSectionAir()
-		})
-		.catch(error => console.error("Échec du rafraîchissement :", error))
+            return response.json()
+        })
+        .then(newData => {
+            tsData = Array.isArray(newData.ts) ? newData.ts : []
+            co2Data = Array.isArray(newData.co2) ? newData.co2 : []
+            ch4Data = Array.isArray(newData.ch4) ? newData.ch4 : []
+            vocData = Array.isArray(newData.voc) ? newData.voc : []
+
+            updateSectionAir()
+            updateDashboardWeather(newData)
+        })
+        .catch(error => {
+            console.error("Échec du rafraîchissement :", error)
+
+            setOffline(sectionCO2)
+            setOffline(sectionCH4)
+            setOffline(sectionVOC)
+        })
 }, 5000)
 
-updateSectionAir();
+updateSectionAir()
