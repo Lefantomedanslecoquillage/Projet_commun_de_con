@@ -28,7 +28,6 @@ include_once __DIR__ . "/header.php";
 			<canvas id="vocChart"></canvas>
 		</div>
 	</div>
-
 	<div class="range-buttons">
 		<a href="?section=air&range=5" class="<?php echo $range === 5 ? "active" : ""; ?>">5 min</a>
 		<a href="?section=air&range=15" class="<?php echo $range === 15 ? "active" : ""; ?>">15 min</a>

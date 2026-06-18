@@ -88,12 +88,65 @@ foreach ($rows as $row) {
 
 $temperatureValue = $meteo['temperature'] !== null ? $meteo['temperature'] : '—';
 $humidityValue = $meteo['humidite'] !== null ? $meteo['humidite'] : '—';
-$temperatureEvolution = $variation_temp === null ? '→ stable' : $fleche_temp . ' ' . $signe_temp . number_format($variation_temp, 2) . ' °C';
-$humidityEvolution = $variation_hum === null ? '→ stable' : $fleche_hum . ' ' . $signe_hum . number_format($variation_hum, 2) . ' %';
+
+$temperatureEvolution = $variation_temp === null
+    ? '→ stable'
+    : $fleche_temp . ' ' . $signe_temp . number_format($variation_temp, 2) . ' °C';
+
+$humidityEvolution = $variation_hum === null
+    ? '→ stable'
+    : $fleche_hum . ' ' . $signe_hum . number_format($variation_hum, 2) . ' %';
+
+/* =========================
+   LUMINOSITE
+   ========================= */
+
+$stmt = $pdo->query("
+    SELECT light_value, day_status, created_at
+    FROM light_sensor_data
+    ORDER BY created_at DESC
+    LIMIT 2
+");
+
+$lightRows = $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
+$lightRows = array_reverse($lightRows);
+
+$lightValues = [];
+$lightStatus = [];
+
+foreach ($lightRows as $row) {
+    $lightValues[] = (int)$row['light_value'];
+    $lightStatus[] = $row['day_status'];
+}
+
+/* =========================
+   SON
+   ========================= */
+
+$stmt = $pdo->query("
+    SELECT raw, timestamp
+    FROM sound_sleep
+    ORDER BY timestamp DESC
+    LIMIT 2
+");
+
+$soundRows = $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
+$soundRows = array_reverse($soundRows);
+
+$soundValues = [];
+
+foreach ($soundRows as $row) {
+    $soundValues[] = (int)$row['raw'];
+}
+
 ?>
+
 
 <link rel="stylesheet" href="styles/dashboard.css">
 <script>
+    let soundData = <?= json_encode($soundValues) ?>;
+    let lightData = <?= json_encode($lightValues) ?>;
+    let lightStatusData = <?= json_encode($lightStatus) ?>;
     let tsData = <?= json_encode($tsValues, JSON_UNESCAPED_UNICODE) . "\n"; ?>
     let co2Data = <?= json_encode($co2Values, JSON_UNESCAPED_UNICODE) . "\n"; ?>
     let ch4Data = <?= json_encode($ch4Values, JSON_UNESCAPED_UNICODE) . "\n"; ?>
@@ -153,14 +206,30 @@ $humidityEvolution = $variation_hum === null ? '→ stable' : $fleche_hum . ' ' 
             </div>
         </a>
         <div class="summary-wrapper">
-            <a class="btn ctn air-section-container" href="index.php?section=light">
-                <h1>Luminosité</h1>
-                <p class="pending">À compléter</p>
-            </a>
-            <a class="btn ctn air-section-container" href="index.php?section=sound">
-                <h1>Niveau sonore</h1>
-                <p class="pending">À compléter</p>
-            </a>
+            <a id="sectionLight"
+                class="btn ctn air-section-container"
+                href="index.php?section=light">
+                    <h1>Luminosité</h1>
+                    <p class="value"></p>
+                    <progress value="0" max="1023"></progress>
+                    <p class="evolution"></p>
+                    <div class="status-container">
+                        <p class="status-icon">●</p>
+                        <p class="status"></p>
+                    </div>
+                </a>
+            <a id="sectionSound"
+                class="btn ctn air-section-container"
+                href="index.php?section=sound">
+                    <h1>Niveau sonore</h1>
+                    <p class="value"></p>
+                    <progress value="0" max="50"></progress>
+                    <p class="evolution"></p>
+                    <div class="status-container">
+                        <p class="status-icon">●</p>
+                        <p class="status"></p>
+                    </div>
+                </a>
         </div>
         <a class="btn ctn" href="index.php?section=environment">
             <h1>Météo</h1>

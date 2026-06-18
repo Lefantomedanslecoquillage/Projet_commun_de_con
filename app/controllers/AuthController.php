@@ -27,6 +27,14 @@ class AuthController {
 		$ch4Values = array_column($data, "CH4");
 		$vocValues = array_column($data, "VOC");
 
+		// Luminosité
+		$lightStmt = $pdo->query("SELECT light_value FROM light_sensor_data ORDER BY created_at DESC LIMIT 2 ");
+		$lightData = array_reverse($lightStmt->fetchAll(PDO::FETCH_COLUMN));
+
+		// Son
+		$soundStmt = $pdo->query(" SELECT raw FROM sound_sleep ORDER BY timestamp DESC LIMIT 2");
+		$soundData = array_reverse( $soundStmt->fetchAll(PDO::FETCH_COLUMN) );
+
 		if (isset($_GET["format"]) && $_GET["format"] === "json") {
 			header("Content-Type: application/json");
 			echo json_encode([
@@ -34,6 +42,10 @@ class AuthController {
 				"co2" => $co2Values,
 				"ch4" => $ch4Values,
 				"voc" => $vocValues,
+
+				"light" => $lightData,
+				"sound" => $soundData,
+
 				"temperature" => $weatherCurrent["temperature"],
 				"humidite" => $weatherCurrent["humidite"],
 				"previousTemperature" => $weatherPrevious["temperature"],
@@ -58,13 +70,42 @@ class AuthController {
 		require __DIR__ . "/../views/dashboardAir.php";
 	}
 
-	public function dashboardLight() {
-		require __DIR__ . "/../views/dashboardLight.php";
-	}
+public function dashboardLight() {
 
-	public function dashboardSound() {
-		require __DIR__ . "/../views/dashboardSound.php";
-	}
+    $range = isset($_GET["range"])
+        ? (int)$_GET["range"]
+        : 15;
+
+    $chartData = [
+        "light" => Sensor::getLightDataByRange($range)
+    ];
+
+    if (isset($_GET["format"]) && $_GET["format"] === "json") {
+        header("Content-Type: application/json");
+        echo json_encode($chartData);
+        exit;
+    }
+
+    require __DIR__ . "/../views/dashboardLight.php";
+}
+public function dashboardSound() {
+
+    $range = isset($_GET["range"])
+        ? (int)$_GET["range"]
+        : 15;
+
+    $chartData = [
+        "sound" => Sensor::getSoundDataByRange($range)
+    ];
+
+    if (isset($_GET["format"]) && $_GET["format"] === "json") {
+        header("Content-Type: application/json");
+        echo json_encode($chartData);
+        exit;
+    }
+
+    require __DIR__ . "/../views/dashboardSound.php";
+}
 
 	public function dashboardEnvironment() {
 		require __DIR__ . "/../views/dashboardEnvironment.php";
