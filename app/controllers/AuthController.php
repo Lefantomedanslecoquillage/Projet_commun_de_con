@@ -6,26 +6,20 @@ require_once __DIR__ . "/../models/Database.php";
 class AuthController {
 	public function dashboard($section) {
 		if ($section == "air") $this->dashboardAir();
-		else if ($section === "light") $this->dashboardLight();
-		else if ($section === "sound") $this->dashboardSound();
 		else if ($section === "environment") $this->dashboardEnvironment();
 		else $this->dashboardMain();
 	}
 
 	public function dashboardMain() {
-		$data = array_reverse(Sensor::getLastTwoData());
+		$airData = array_reverse(Sensor::getLastTwoData("ambient_air", "timestamp"));
+		$weatherData = array_reverse(Sensor::getLastTwoData("groupe_4B", "horodatage"));
 		$pdo = Database::getConnection();
 
-		$weatherCurrentStmt = $pdo->query("SELECT temperature, humidite FROM groupe_4B ORDER BY horodatage DESC LIMIT 1");
-		$weatherCurrent = $weatherCurrentStmt->fetch(PDO::FETCH_ASSOC) ?: ["temperature" => null, "humidite" => null];
-
-		$weatherPreviousStmt = $pdo->query("SELECT temperature, humidite FROM groupe_4B ORDER BY horodatage DESC LIMIT 1 OFFSET 1");
-		$weatherPrevious = $weatherPreviousStmt->fetch(PDO::FETCH_ASSOC) ?: ["temperature" => null, "humidite" => null];
-
-		$tsValues = array_column($data, "timestamp");
-		$co2Values = array_column($data, "CO2");
-		$ch4Values = array_column($data, "CH4");
-		$vocValues = array_column($data, "VOC");
+		// Air
+		$tsValues = array_column($airData, "timestamp");
+		$co2Values = array_column($airData, "CO2");
+		$ch4Values = array_column($airData, "CH4");
+		$vocValues = array_column($airData, "VOC");
 
 		// Luminosité
 		$lightStmt = $pdo->query("SELECT light_value FROM light_sensor_data ORDER BY created_at DESC LIMIT 2 ");
@@ -46,10 +40,7 @@ class AuthController {
 				"light" => $lightData,
 				"sound" => $soundData,
 
-				"temperature" => $weatherCurrent["temperature"],
-				"humidite" => $weatherCurrent["humidite"],
-				"previousTemperature" => $weatherPrevious["temperature"],
-				"previousHumidite" => $weatherPrevious["humidite"]
+				"weather" => $weatherData
 			], JSON_UNESCAPED_UNICODE);
 			exit;
 		}
@@ -70,45 +61,23 @@ class AuthController {
 		require __DIR__ . "/../views/dashboardAir.php";
 	}
 
-public function dashboardLight() {
-
-    $range = isset($_GET["range"])
-        ? (int)$_GET["range"]
-        : 15;
-
-    $chartData = [
-        "light" => Sensor::getLightDataByRange($range)
-    ];
-
-    if (isset($_GET["format"]) && $_GET["format"] === "json") {
-        header("Content-Type: application/json");
-        echo json_encode($chartData);
-        exit;
-    }
-
-    require __DIR__ . "/../views/dashboardLight.php";
-}
-public function dashboardSound() {
-
-    $range = isset($_GET["range"])
-        ? (int)$_GET["range"]
-        : 15;
-
-    $chartData = [
-        "sound" => Sensor::getSoundDataByRange($range)
-    ];
-
-    if (isset($_GET["format"]) && $_GET["format"] === "json") {
-        header("Content-Type: application/json");
-        echo json_encode($chartData);
-        exit;
-    }
-
-    require __DIR__ . "/../views/dashboardSound.php";
-}
-
 	public function dashboardEnvironment() {
-		require __DIR__ . "/../views/dashboardEnvironment.php";
+		$range = isset($_GET["range"])
+			? (int)$_GET["range"]
+			: 15;
+
+		$chartData = [
+			"light" => Sensor::getLightDataByRange($range),
+			"sound" => Sensor::getSoundDataByRange($range)
+		];
+
+		if (isset($_GET["format"]) && $_GET["format"] === "json") {
+			header("Content-Type: application/json");
+			echo json_encode($chartData);
+			exit;
+		}
+
+		require __DIR__ . "/../views/dashboardEnv.php";
 	}
 
 	public function homepage() {

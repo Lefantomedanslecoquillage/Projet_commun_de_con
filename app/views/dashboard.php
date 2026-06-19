@@ -9,8 +9,8 @@ $pdo = Database::getConnection();
 // Seuils pour les alertes
 
 $seuil_co2 = 800;   // ppm
-$seuil_ch4 = 50;    // à adapter
-$seuil_voc = 200;   // à adapter
+$seuil_ch4 = 300;    // à adapter
+$seuil_voc = 100;   // à adapter
 
 $stmt = $pdo->query("SELECT CO2, CH4, VOC FROM ambient_air ORDER BY timestamp DESC LIMIT 1");
 $air = $stmt ? $stmt->fetch(PDO::FETCH_ASSOC) : false;
@@ -151,6 +151,7 @@ foreach ($soundRows as $row) {
     let co2Data = <?= json_encode($co2Values, JSON_UNESCAPED_UNICODE) . "\n"; ?>
     let ch4Data = <?= json_encode($ch4Values, JSON_UNESCAPED_UNICODE) . "\n"; ?>
     let vocData = <?= json_encode($vocValues, JSON_UNESCAPED_UNICODE) . "\n"; ?>
+	let weatherData = <?= json_encode($weatherData, JSON_UNESCAPED_UNICODE) . "\n"; ?>
 </script>
 <script defer src="scripts/dashboard.js"></script>
 
@@ -205,44 +206,50 @@ foreach ($soundRows as $row) {
                 </div>
             </div>
         </a>
-        <div class="summary-wrapper">
-            <a id="sectionLight"
-                class="btn ctn air-section-container"
-                href="index.php?section=light">
-                    <h1>Luminosité</h1>
-                    <p class="value"></p>
-                    <progress value="0" max="1023"></progress>
-                    <p class="evolution"></p>
-                    <div class="status-container">
-                        <p class="status-icon">●</p>
-                        <p class="status"></p>
-                    </div>
-                </a>
-            <a id="sectionSound"
-                class="btn ctn air-section-container"
-                href="index.php?section=sound">
-                    <h1>Niveau sonore</h1>
-                    <p class="value"></p>
-                    <progress value="0" max="50"></progress>
-                    <p class="evolution"></p>
-                    <div class="status-container">
-                        <p class="status-icon">●</p>
-                        <p class="status"></p>
-                    </div>
-                </a>
-        </div>
-        <a class="btn ctn" href="index.php?section=environment">
-            <h1>Météo</h1>
-            <div class="summary-wrapper">
-                <div class="ctn air-section-container">
+		<a class="btn ctn" href="index.php?section=environment">
+            <h1>Environment</h1>
+            <div id="envWrapper" class="summary-wrapper">
+				<div id="sectionLight"
+	               class="btn ctn air-section-container">
+					<h1>Luminosité</h1>
+					<p class="value"></p>
+					<progress value="0" max="1023"></progress>
+					<p class="evolution"></p>
+					<div class="status-container">
+						<p class="status-icon">●</p>
+						<p class="status"></p>
+					</div>
+				</div>
+				<div id="sectionSound"
+	               class="btn ctn air-section-container">
+					<h1>Niveau sonore</h1>
+					<p class="value"></p>
+					<progress value="0" max="50"></progress>
+					<p class="evolution"></p>
+					<div class="status-container">
+						<p class="status-icon">●</p>
+						<p class="status"></p>
+					</div>
+				</div>
+                <div id="sectionTemp" class="ctn air-section-container">
                     <h1>Température</h1>
-                    <p id="temperatureValue" class="value"><?= htmlspecialchars((string)$temperatureValue, ENT_QUOTES, 'UTF-8') ?> °C</p>
-                    <p id="temperatureEvolution" class="evolution"><?= htmlspecialchars($temperatureEvolution, ENT_QUOTES, 'UTF-8') ?></p>
+					<p class="value"></p>
+					<progress value="0" max="50"></progress>
+					<p class="evolution"></p>
+					<div class="status-container">
+						<p class="status-icon">●</p>
+						<p class="status"></p>
+					</div>
                 </div>
-                <div class="ctn air-section-container">
+                <div id="sectionHum" class="ctn air-section-container">
                     <h1>Humidité</h1>
-                    <p id="humidityValue" class="value"><?= htmlspecialchars((string)$humidityValue, ENT_QUOTES, 'UTF-8') ?> %</p>
-                    <p id="humidityEvolution" class="evolution"><?= htmlspecialchars($humidityEvolution, ENT_QUOTES, 'UTF-8') ?></p>
+					<p class="value"></p>
+					<progress value="0" max="100"></progress>
+					<p class="evolution"></p>
+					<div class="status-container">
+						<p class="status-icon">●</p>
+						<p class="status"></p>
+					</div>
                 </div>
             </div>
         </a>

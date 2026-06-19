@@ -255,20 +255,33 @@ progress::-moz-progress-bar {
     line-height: 1;
     padding-bottom: 0;
 }
- 
- 
-/* ========================================
-   PENDING (À compléter)
-======================================== */
- 
-.pending {
-    font-size: 0.85rem;
-    color: var(--pending-color) !important;
-    font-style: italic;
-    margin: 0 !important;
+
+
+
+#envWrapper {
+    display: grid;
 }
- 
- 
+
+#sectionLight {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+#sectionSound {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+#sectionTemp {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+#sectionHum {
+    grid-column: 2;
+    grid-row: 2;
+}
+
 /* ========================================
    RESPONSIVE
 ======================================== */

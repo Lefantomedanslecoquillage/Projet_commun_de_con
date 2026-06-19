@@ -1,12 +1,10 @@
 const sectionCO2 = document.getElementById("sectionCO2")
 const sectionCH4 = document.getElementById("sectionCH4")
 const sectionVOC = document.getElementById("sectionVOC")
-const temperatureValue = document.getElementById("temperatureValue")
-const temperatureEvolution = document.getElementById("temperatureEvolution")
-const humidityValue = document.getElementById("humidityValue")
-const humidityEvolution = document.getElementById("humidityEvolution")
 const sectionLight = document.getElementById("sectionLight")
 const sectionSound = document.getElementById("sectionSound")
+const sectionTemp = document.getElementById("sectionTemp")
+const sectionHum = document.getElementById("sectionHum")
 
 function setOffline(section) {
     const valueElement = section?.querySelector(".value")
@@ -85,36 +83,6 @@ function updateGasSection(section, data, unit) {
     }
 }
 
-function updateWeatherSection(latestValue, previousValue, unit, valueElement, evolutionElement) {
-    if (!valueElement || !evolutionElement || latestValue === null || latestValue === undefined) {
-        return
-    }
-
-    const latestNumericValue = Number(latestValue)
-    const previousNumericValue = previousValue === null || previousValue === undefined ? null : Number(previousValue)
-
-    if (Number.isNaN(latestNumericValue)) {
-        return
-    }
-
-    valueElement.textContent = `${latestNumericValue} ${unit}`
-
-    if (previousNumericValue === null || Number.isNaN(previousNumericValue)) {
-        evolutionElement.textContent = "→ stable"
-        return
-    }
-
-    const variation = latestNumericValue - previousNumericValue
-    const formattedVariation = Math.abs(variation).toFixed(2)
-
-    if (variation > 0) {
-        evolutionElement.textContent = `↗ +${formattedVariation} ${unit}`
-    } else if (variation < 0) {
-        evolutionElement.textContent = `↘ -${formattedVariation} ${unit}`
-    } else {
-        evolutionElement.textContent = "→ stable"
-    }
-}
 
 function isRecentData() {
     if (!Array.isArray(tsData) || tsData.length < 1) {
@@ -184,8 +152,6 @@ function updateSectionAir() {
     updateGasSection(sectionCO2, co2Data, "ppm")
     updateGasSection(sectionCH4, ch4Data, "ppb")
     updateGasSection(sectionVOC, vocData, "ppb")
-    updateGenericSection(sectionLight,lightData,"lux")
-    updateGenericSection(sectionSound,soundData,"dB")
 
     if (!isRecentData()) {
         return
@@ -196,13 +162,22 @@ function updateSectionAir() {
     setOnline(sectionVOC)
 }
 
-function updateDashboardWeather(data) {
-    if (!data || typeof data !== "object") {
+function updateSectionWeather() {
+    setOffline(sectionTemp)
+    setOffline(sectionHum)
+
+    updateGasSection(sectionTemp, [weatherData[0]["temperature"], weatherData[1]["temperature"]], "°C")
+    updateGasSection(sectionHum, [weatherData[0]["humidite"], weatherData[1]["humidite"]], "%")
+
+    const latestTimestamp = weatherData[weatherData.length - 1]["horodatage"]
+    const utcDateStr = latestTimestamp.replace(" ", "T") + "Z"
+    const timestampMs = Date.parse(utcDateStr)
+    if (Date.now() - timestampMs >= 60_000) {
         return
     }
 
-    updateWeatherSection(data.temperature, data.previousTemperature, "°C", temperatureValue, temperatureEvolution)
-    updateWeatherSection(data.humidite, data.previousHumidite, "%", humidityValue, humidityEvolution)
+    setOnline(sectionTemp)
+    setOnline(sectionHum)
 }
 
 let refreshInterval = setInterval(() => {
@@ -221,11 +196,12 @@ let refreshInterval = setInterval(() => {
             vocData = Array.isArray(newData.voc) ? newData.voc : []
             lightData = Array.isArray(newData.light) ? newData.light : []
             soundData = Array.isArray(newData.sound) ? newData.sound : []
+            weatherData = Array.isArray(newData.weather) ? newData.weather : []
 
-            updateSectionAir()
-            updateDashboardWeather(newData)
             updateGenericSection(sectionLight,lightData,"lux")
             updateGenericSection(sectionSound,soundData,"dB")
+            updateSectionAir()
+            updateSectionWeather()
         })
         .catch(error => {
             console.error("Échec du rafraîchissement :", error)
@@ -235,7 +211,12 @@ let refreshInterval = setInterval(() => {
             setOffline(sectionVOC)
             setOffline(sectionLight)
             setOffline(sectionSound)
+            setOffline(sectionTemp)
+            setOffline(sectionHum)
         })
 }, 5000)
 
+updateGenericSection(sectionLight,lightData,"lux")
+updateGenericSection(sectionSound,soundData,"dB")
 updateSectionAir()
+updateSectionWeather()

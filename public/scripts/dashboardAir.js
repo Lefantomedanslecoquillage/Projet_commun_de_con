@@ -1,4 +1,4 @@
-function options(unit) {
+function Options(unit) {
 	this.responsive = true,
 	this.maintainAspectRatio = false,
 	this.scales = {
@@ -33,7 +33,7 @@ const co2Chart = new Chart(document.getElementById("co2Chart"), {
 			tension: 0.3
 		}]
 	},
-	options: new options("ppm")
+	options: new Options("ppm")
 })
 
 const ch4Chart = new Chart(document.getElementById("ch4Chart"), {
@@ -47,7 +47,7 @@ const ch4Chart = new Chart(document.getElementById("ch4Chart"), {
 			tension: 0.3
 		}]
 	},
-	options: new options("ppb")
+	options: new Options("ppb")
 })
 
 const vocChart = new Chart(document.getElementById("vocChart"), {
@@ -61,7 +61,7 @@ const vocChart = new Chart(document.getElementById("vocChart"), {
 			tension: 0.3
 		}]
 	},
-	options: new options("ppb")
+	options: new Options("ppb")
 })
 
 let refreshInterval = setInterval(() => {

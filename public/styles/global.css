@@ -8,52 +8,21 @@
 	src: url("/fonts/AtlassianMono.woff2");
 }
 
-@media (prefers-color-scheme: dark) {
-	:root {
+:root {
+	--bg-color: #F8F8F8;
+	--fg-color: #292A2E;
 
-		--bg-color: #F6F2EA;
-		--bg-secondary: #ECE4D8;
-
-		--fg-color: #332821;
-		--fg-secondary: #67584A;
-
-		--link-color: #8B6B4A;
-
-		--border-color: #CFC2B2;
-
-		--danger-color: #B35C44;
-		--active-color: #6C8A64;
-
-		--pending-color: #A35A7A;
-	}
-
-	.icon {
-		filter: invert(89%) sepia(5%) saturate(104%) hue-rotate(187deg) brightness(96%) contrast(86%);
-	}
-
-	.icon-btn:hover .icon {
-		filter: invert(48%) sepia(53%) saturate(534%) hue-rotate(179deg) brightness(112%) contrast(89%);
-	}
+	--link-color: #357DE8;
+	--danger-color: #C9372C;
+	--active-color: #22A06B;
 }
 
-@media (prefers-color-scheme: light) {
-	:root {
-		--bg-color: #F8F8F8;
-		--fg-color: #292A2E;
+.icon {
+	filter: invert(12%) sepia(6%) saturate(889%) hue-rotate(191deg) brightness(96%) contrast(87%);
+}
 
-		--link-color: #357DE8;
-		--danger-color: #C9372C;
-		--active-color: #22A06B;
-		--pending-color: #AE4787;
-	}
-
-	.icon {
-		filter: invert(12%) sepia(6%) saturate(889%) hue-rotate(191deg) brightness(96%) contrast(87%);
-	}
-
-	.icon-btn:hover .icon {
-		filter: invert(41%) sepia(96%) saturate(2578%) hue-rotate(202deg) brightness(97%) contrast(87%);
-	}
+.icon-btn:hover .icon {
+	filter: invert(41%) sepia(96%) saturate(2578%) hue-rotate(202deg) brightness(97%) contrast(87%);
 }
 
 html {
@@ -98,10 +67,6 @@ main {
 
 .danger, .error {
 	color: var(--danger-color);
-}
-
-.pending {
-	color: var(--pending-color) !important;
 }
 
 @media (max-width: 768px) {

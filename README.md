@@ -1,6 +1,6 @@
 # Prérequis
 
-Un fichier `/app/models/config.ini` doit se trouver à la racine de ce répertoire et il ressemble à ceci :
+Un fichier `/app/models/config.ini` doit se trouver à la **racine** de ce répertoire et il ressemble à ceci :
 ```ini
 [serial]
 baudrate = 9600
@@ -14,7 +14,8 @@ username = ?
 password = ?
 ```
 Les valeurs sont disponibles ici :
-[Hangar &ndash; Garage ISEP](https://hangar.garageisep.com/projects/51).
+[Hangar &ndash; Garage ISEP](https://hangar.garageisep.com/projects/51)
+dans la section Variables d'Environnement.
 
 ## Librairies Arduino
 

@@ -9,4 +9,4 @@ include_once __DIR__ . "/header.php";
 <?php
 include_once "homepage.html";
 ?>
-<?php include_once __DIR__ . "/footer.php"; ?>
+<?php include_once __DIR__ . "/footer.html"; ?>
