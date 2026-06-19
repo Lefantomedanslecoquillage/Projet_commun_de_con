@@ -90,9 +90,6 @@ div h1 {
 ======================================== */
  
 .alerts-container {
-    width: 28%;
-    flex-shrink: 0;
- 
     background: rgba(230, 212, 191, 0.15);
 }
  
@@ -255,8 +252,6 @@ progress::-moz-progress-bar {
     line-height: 1;
     padding-bottom: 0;
 }
-
-
 
 #envWrapper {
     display: grid;

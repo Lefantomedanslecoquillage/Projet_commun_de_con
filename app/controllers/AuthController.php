@@ -22,12 +22,24 @@ class AuthController {
 		$vocValues = array_column($airData, "VOC");
 
 		// Luminosité
-		$lightStmt = $pdo->query("SELECT light_value FROM light_sensor_data ORDER BY created_at DESC LIMIT 2 ");
+		$lightStmt = $pdo->query("SELECT light_value FROM light_sensor_data ORDER BY created_at DESC LIMIT 2");
 		$lightData = array_reverse($lightStmt->fetchAll(PDO::FETCH_COLUMN));
+		$lightStmt = $pdo->query("SELECT day_status FROM light_sensor_data ORDER BY created_at DESC LIMIT 1");
+		$lightStatus = $lightStmt->fetchColumn();
+		if ($lightStatus === false) {
+			$lightStatus = "";
+		}
 
 		// Son
 		$soundStmt = $pdo->query(" SELECT raw FROM sound_sleep ORDER BY timestamp DESC LIMIT 2");
 		$soundData = array_reverse( $soundStmt->fetchAll(PDO::FETCH_COLUMN) );
+		$soundStmt = $pdo->query("SELECT detailed_type FROM sound_sleep ORDER BY timestamp DESC LIMIT 1");
+		$soundStatus = $soundStmt->fetchColumn();
+		if ($soundStatus === false) {
+			$soundStatus = "";
+		} else if ($soundStatus == "apnea_suspected") {
+			$soundStatus = "Potentiel apnée";
+		}
 
 		if (isset($_GET["format"]) && $_GET["format"] === "json") {
 			header("Content-Type: application/json");
@@ -66,9 +78,13 @@ class AuthController {
 			? (int)$_GET["range"]
 			: 15;
 
+		$weatherData = Sensor::getWeatherDataByRange($range);
+
 		$chartData = [
 			"light" => Sensor::getLightDataByRange($range),
-			"sound" => Sensor::getSoundDataByRange($range)
+			"sound" => Sensor::getSoundDataByRange($range),
+			"temperature" => $weatherData["temperature"],
+			"humidity" => $weatherData["humidity"]
 		];
 
 		if (isset($_GET["format"]) && $_GET["format"] === "json") {

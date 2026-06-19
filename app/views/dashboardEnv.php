@@ -4,6 +4,7 @@ include_once __DIR__ . "/header.php";
 ?>
 
 <link rel="stylesheet" href="styles/dashboardAir.css">
+<link rel="stylesheet" href="styles/dashboardEnv.css">
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
@@ -11,6 +12,8 @@ include_once __DIR__ . "/header.php";
 <script>
 	const lightData = <?= json_encode($chartData["light"]) ?>;
 	const soundData = <?= json_encode($chartData["sound"]) ?>;
+	const tempData = <?= json_encode($chartData["temperature"]) ?>;
+	const humData = <?= json_encode($chartData["humidity"]) ?>;
 	const range = <?= $range ?>;
 </script>
 
@@ -25,6 +28,15 @@ include_once __DIR__ . "/header.php";
 			<canvas id="soundChart"></canvas>
 		</div>
 	</div>
+	<div class="charts-container">
+		<div class="chart-wrapper">
+			<canvas id="tempChart"></canvas>
+		</div>
+		<div class="chart-wrapper">
+			<canvas id="humChart"></canvas>
+		</div>
+	</div>
+
 
 	<div class="range-buttons">
 		<a href="?section=environment&range=5" class="<?= $range === 5 ? 'active' : '' ?>">5 min</a>

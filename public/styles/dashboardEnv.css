@@ -1,0 +1,10 @@
+.charts-container {
+	flex-direction: row;
+	justify-content: space-around;
+	width: 100vw;
+}
+
+.chart-wrapper {
+	min-height: 30vh;
+	min-width: 45vw;
+}

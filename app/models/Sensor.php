@@ -20,6 +20,22 @@ class Sensor
 		return ["co2" => $co2Points, "ch4" => $ch4Points, "voc" => $vocPoints];
 	}
 
+	public static function getWeatherDataByRange(int $minutes): array
+	{
+		$pdo = Database::getConnection();
+		$sql = "SELECT * FROM groupe_4B WHERE horodatage >= NOW() - INTERVAL :mins MINUTE ORDER BY horodatage ASC";
+
+		$stmt = $pdo->prepare($sql);
+		$stmt->bindValue(":mins", $minutes, PDO::PARAM_INT);
+		$stmt->execute();
+		$data = $stmt->fetchAll();
+
+		$tempoints = array_map(fn($r) => ["x" => $r["horodatage"], "y" => (int)$r["temperature"]], $data);
+		$humoints = array_map(fn($r) => ["x" => $r["horodatage"], "y" => (int)$r["humidite"]], $data);
+
+		return ["temperature" => $tempoints, "humidity" => $humoints];
+	}
+
 	public static function getLastTwoData($table, $filter): array
 	{
 		$pdo = Database::getConnection();

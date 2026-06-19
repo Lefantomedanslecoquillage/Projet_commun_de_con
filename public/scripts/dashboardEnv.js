@@ -58,3 +58,59 @@ const soundChart = new Chart(
 		options: new Options("dB")
 	}
 )
+
+const tempChart = new Chart(
+	document.getElementById("tempChart"),
+	{
+		type: "line",
+		data: {
+			datasets: [{
+				label: "Température",
+				data: tempData,
+				borderColor: "rgb(75, 192, 192)",
+				backgroundColor: "rgba(75, 192, 192,0.1)",
+				tension: 0.3
+			}]
+		},
+		options: new Options("°C")
+	}
+)
+
+const humChart = new Chart(
+	document.getElementById("humChart"),
+	{
+		type: "line",
+		data: {
+			datasets: [{
+				label: "Humidité",
+				data: humData,
+				borderColor: "rgb(153, 102, 255)",
+				backgroundColor: "rgba(153, 102, 255,0.1)",
+				tension: 0.3
+			}]
+		},
+		options: new Options("%")
+	}
+)
+
+let refreshInterval = setInterval(() => {
+	fetch(`index.php?section=environment&range=${range}&format=json`, { cache: "no-store" })
+		.then(response => {
+			if (!response.ok) throw new Error("Erreur réseau")
+			return response.json()
+		})
+		.then(newData => {
+			lightChart.data.datasets[0].data = newData.light
+			lightChart.update()
+
+			soundChart.data.datasets[0].data = newData.sound
+			soundChart.update()
+
+			tempChart.data.datasets[0].data = newData.temperature
+			tempChart.update()
+
+			humChart.data.datasets[0].data = newData.humidity
+			humChart.update()
+		})
+		.catch(error => console.error("Échec du rafraîchissement :", error))
+}, 15000)

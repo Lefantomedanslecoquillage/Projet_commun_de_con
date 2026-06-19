@@ -5,9 +5,7 @@ include_once __DIR__ . "/header.php";
 require_once __DIR__ . '/../models/Database.php'; // adapte si besoin
 $pdo = Database::getConnection();
 
-
 // Seuils pour les alertes
-
 $seuil_co2 = 800;   // ppm
 $seuil_ch4 = 300;    // à adapter
 $seuil_voc = 100;   // à adapter
@@ -37,116 +35,13 @@ if (!empty($alertes)){
     $stmt = $pdo->prepare("UPDATE etats_actionneurs SET etat = 0, declenche_par = ?, derniere_action = NOW() WHERE composant = 'led_rouge'");
     $stmt->execute();
 }
-
-// Connexion BDD
-
-require_once __DIR__ . '/../models/Database.php';
-$pdo = Database::getConnection();
-
-// Dernière mesure météo
-$stmt = $pdo->query("SELECT temperature, humidite FROM groupe_4B ORDER BY horodatage DESC LIMIT 1");
-$meteo = $stmt ? $stmt->fetch(PDO::FETCH_ASSOC) : false;
-$meteo = is_array($meteo) ? $meteo : ["temperature" => null, "humidite" => null];
-
-// Avant-dernière mesure
-$stmt2 = $pdo->query("SELECT temperature, humidite FROM groupe_4B ORDER BY horodatage DESC LIMIT 1 OFFSET 1");
-$meteo_precedent = $stmt2 ? $stmt2->fetch(PDO::FETCH_ASSOC) : false;
-$meteo_precedent = is_array($meteo_precedent) ? $meteo_precedent : ["temperature" => null, "humidite" => null];
-
-// Variations température
-$variation_temp = ($meteo['temperature'] !== null && $meteo_precedent['temperature'] !== null)
-    ? $meteo['temperature'] - $meteo_precedent['temperature']
-    : null;
-$fleche_temp = $variation_temp > 0 ? '↗️' : ($variation_temp < 0 ? '↘️' : '→');
-$signe_temp = $variation_temp > 0 ? '+' : '';
-
-// Variations humidité
-$variation_hum = ($meteo['humidite'] !== null && $meteo_precedent['humidite'] !== null)
-    ? $meteo['humidite'] - $meteo_precedent['humidite']
-    : null;
-$fleche_hum = $variation_hum > 0 ? '↗️' : ($variation_hum < 0 ? '↘️' : '→');
-$signe_hum = $variation_hum > 0 ? '+' : '';
-$stmt = $pdo->query("SELECT timestamp, CO2, CH4, VOC FROM ambient_air ORDER BY timestamp DESC LIMIT 2");
-$rows = $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
-$rows = is_array($rows) ? array_reverse($rows) : [];
-
-$tsValues = [];
-$co2Values = [];
-$ch4Values = [];
-$vocValues = [];
-
-foreach ($rows as $row) {
-    if (!isset($row['timestamp']) || $row['timestamp'] === null) {
-        continue;
-    }
-
-    $tsValues[] = $row['timestamp'];
-    $co2Values[] = $row['CO2'] !== null ? (float)$row['CO2'] : null;
-    $ch4Values[] = $row['CH4'] !== null ? (float)$row['CH4'] : null;
-    $vocValues[] = $row['VOC'] !== null ? (float)$row['VOC'] : null;
-}
-
-$temperatureValue = $meteo['temperature'] !== null ? $meteo['temperature'] : '—';
-$humidityValue = $meteo['humidite'] !== null ? $meteo['humidite'] : '—';
-
-$temperatureEvolution = $variation_temp === null
-    ? '→ stable'
-    : $fleche_temp . ' ' . $signe_temp . number_format($variation_temp, 2) . ' °C';
-
-$humidityEvolution = $variation_hum === null
-    ? '→ stable'
-    : $fleche_hum . ' ' . $signe_hum . number_format($variation_hum, 2) . ' %';
-
-/* =========================
-   LUMINOSITE
-   ========================= */
-
-$stmt = $pdo->query("
-    SELECT light_value, day_status, created_at
-    FROM light_sensor_data
-    ORDER BY created_at DESC
-    LIMIT 2
-");
-
-$lightRows = $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
-$lightRows = array_reverse($lightRows);
-
-$lightValues = [];
-$lightStatus = [];
-
-foreach ($lightRows as $row) {
-    $lightValues[] = (int)$row['light_value'];
-    $lightStatus[] = $row['day_status'];
-}
-
-/* =========================
-   SON
-   ========================= */
-
-$stmt = $pdo->query("
-    SELECT raw, timestamp
-    FROM sound_sleep
-    ORDER BY timestamp DESC
-    LIMIT 2
-");
-
-$soundRows = $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
-$soundRows = array_reverse($soundRows);
-
-$soundValues = [];
-
-foreach ($soundRows as $row) {
-    $soundValues[] = (int)$row['raw'];
-}
-
 ?>
 
 
 <link rel="stylesheet" href="styles/dashboard.css">
 <script>
-    let soundData = <?= json_encode($soundValues) ?>;
-    let lightData = <?= json_encode($lightValues) ?>;
-    let lightStatusData = <?= json_encode($lightStatus) ?>;
+    let soundData = <?= json_encode($soundData) ?>;
+    let lightData = <?= json_encode($lightData) ?>;
     let tsData = <?= json_encode($tsValues, JSON_UNESCAPED_UNICODE) . "\n"; ?>
     let co2Data = <?= json_encode($co2Values, JSON_UNESCAPED_UNICODE) . "\n"; ?>
     let ch4Data = <?= json_encode($ch4Values, JSON_UNESCAPED_UNICODE) . "\n"; ?>
@@ -156,102 +51,37 @@ foreach ($soundRows as $row) {
 <script defer src="scripts/dashboard.js"></script>
 
 <main>
-    <div class="ctn alerts-container">
-        <h1>Alertes</h1>
-        
-        <?php if (empty($alertes)): ?>
-            <p class="ok">✅ Aucun problème</p>
-        <?php else: ?>
-            <ul class="alert-list">
-                <?php foreach ($alertes as $alerte): ?>
-                    <li class="alert-item">⚠️ <?= htmlspecialchars($alerte, ENT_QUOTES, 'UTF-8') ?></li>
-                <?php endforeach; ?>
-            </ul>
-        <?php endif; ?>
-
-    </div>
-    <div class="sensors-container">
-        <a class="btn ctn" href="index.php?section=air">
-            <h1>Qualité de l'air ambient</h1>
-            <div class="summary-wrapper">
-                <div id="sectionCO2" class="ctn air-section-container">
-                    <h1>CO2</h1>
-                    <p class="value"></p>
-                    <progress value="0" max="800"></progress>
-                    <p class="evolution"></p>
-                    <div class="status-container">
-                        <p class="status-icon">●</p>
-                        <p class="status"></p>
-                    </div>
-                </div>
-                <div id="sectionCH4" class="ctn air-section-container">
-                    <h1>CH4</h1>
-                    <p class="value"></p>
-                    <progress value="0" max="300"></progress>
-                    <p class="evolution"></p>
-                    <div class="status-container">
-                        <p class="status-icon">●</p>
-                        <p class="status"></p>
-                    </div>
-                </div>
-                <div id="sectionVOC" class="ctn air-section-container">
-                    <h1>VOC</h1>
-                    <p class="value"></p>
-                    <progress value="0" max="100"></progress>
-                    <p class="evolution"></p>
-                    <div class="status-container">
-                        <p class="status-icon">●</p>
-                        <p class="status"></p>
-                    </div>
-                </div>
-            </div>
-        </a>
-		<a class="btn ctn" href="index.php?section=environment">
-            <h1>Environment</h1>
-            <div id="envWrapper" class="summary-wrapper">
-				<div id="sectionLight"
-	               class="btn ctn air-section-container">
-					<h1>Luminosité</h1>
-					<p class="value"></p>
-					<progress value="0" max="1023"></progress>
-					<p class="evolution"></p>
-					<div class="status-container">
-						<p class="status-icon">●</p>
-						<p class="status"></p>
-					</div>
+	<div style="display: flex; flex-direction: column; gap: 1rem;">
+		<div class="ctn alerts-container">
+			<h1>Période</h1>
+			<?php if($lightStatus === "NIGHT"): ?>
+			<div style="display: flex; align-items: center; gap: 1rem;">
+				<img class="icon" src="images/night.svg">
+				<p>Nuit</p>
+			</div>
+			<?php else: ?>
+				<div style="display: flex; align-items: center; gap: 1rem;">
+					<img class="icon" src="images/day.svg">
+					<p>Jour</p>
 				</div>
-				<div id="sectionSound"
-	               class="btn ctn air-section-container">
-					<h1>Niveau sonore</h1>
-					<p class="value"></p>
-					<progress value="0" max="50"></progress>
-					<p class="evolution"></p>
-					<div class="status-container">
-						<p class="status-icon">●</p>
-						<p class="status"></p>
-					</div>
-				</div>
-                <div id="sectionTemp" class="ctn air-section-container">
-                    <h1>Température</h1>
-					<p class="value"></p>
-					<progress value="0" max="50"></progress>
-					<p class="evolution"></p>
-					<div class="status-container">
-						<p class="status-icon">●</p>
-						<p class="status"></p>
-					</div>
-                </div>
-                <div id="sectionHum" class="ctn air-section-container">
-                    <h1>Humidité</h1>
-					<p class="value"></p>
-					<progress value="0" max="100"></progress>
-					<p class="evolution"></p>
-					<div class="status-container">
-						<p class="status-icon">●</p>
-						<p class="status"></p>
-					</div>
-                </div>
-            </div>
-        </a>
-    </div>
+			<?php endif; ?>
+		</div>
+		<div class="ctn alerts-container">
+			<h1>Sommeil</h1>
+			<p style="text-transform: capitalize"><?= $soundStatus; ?></p>
+		</div>
+		<div class="ctn alerts-container">
+			<h1>Alertes</h1>
+			<?php if (empty($alertes)): ?>
+				<p class="ok">✅ Aucun problème</p>
+			<?php else: ?>
+				<ul class="alert-list">
+					<?php foreach ($alertes as $alerte): ?>
+						<li class="alert-item">⚠️ <?= htmlspecialchars($alerte, ENT_QUOTES, 'UTF-8') ?></li>
+					<?php endforeach; ?>
+				</ul>
+			<?php endif; ?>
+		</div>
+	</div>
+	<?php include_once __DIR__ . "/dashboard.html"; ?>
 </main>
